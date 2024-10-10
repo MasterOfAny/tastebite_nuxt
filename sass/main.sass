@@ -1,0 +1,57 @@
+:root
+    --font-family-base: 'Inter', sans-serif
+    --font-family-secondary: 'Playfair Display', sans-serif
+    --color-white: #fff
+    --color-white-secondary: #e3f1ff
+    --color-gray-light: #f9f9f9
+    --color-gray-other-light: #e8e8e8
+    --color-gray-dark: #7f7f7f
+    --color-orange-light: #ffd7c9
+    --color-orange: #ff642f
+    --color-black: #000
+    --color-system-danger: #ff3030
+    --color-system-success: #60dc8c
+    --color-system-warning: #979797
+
+@font-face
+    font-family: 'Inter'
+    src: url('/fonts/Inter_18pt-Light.woff2') format('woff2'),
+    font-weight: 300
+    font-style: normal
+    font-display: swap
+
+@font-face
+    font-family: 'Inter'
+    src: url('/fonts/Inter_18pt-Regular.woff2') format('woff2'),
+    font-weight: 400
+    font-style: normal
+    font-display: swap
+
+@font-face
+    font-family: 'Inter'
+    src: url('/fonts/Inter_18pt-Medium.woff2') format('woff2'),
+    font-weight: 500
+    font-style: normal
+    font-display: swap
+
+@font-face
+    font-family: 'Inter'
+    src: url('/fonts/Inter_18pt-SemiBold.woff2') format('woff2'),
+    font-weight: 600
+    font-style: normal
+    font-display: swap
+
+@font-face
+    font-family: 'Playfair Display'
+    src: url('/fonts/PlayfairDisplay-Bold.woff2') format('woff2'),
+    font-weight: 700
+    font-style: normal
+    font-display: swap
+
+.container
+    display: grid
+    grid-column-gap: 30px
+    grid-template-columns: [left] 1fr [content-start] repeat(12, 65px) [content-end] 1fr [right]
+
+body
+    font-family: var(--font-family-base)
