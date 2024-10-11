@@ -6,7 +6,8 @@
                     <use xlink:href="/images/iconsList.svg#logo"></use>
                 </svg>
             </NuxtLink>
-            <nav class="header-nav">
+            <nav :class="{ 'header-nav': true, 'header-nav_closed': !isMenuOpen.status }"
+                :style="{ height: isMenuOpen.status ? '180px' : undefined }">
                 <ul class="nav-list">
                     <li class="nav-list__item">
                         <NuxtLink to="#" class="nav-list__link">Recipes</NuxtLink>
@@ -22,12 +23,19 @@
                     </li>
                 </ul>
             </nav>
-            <svg class="header-search">
-                <use xlink:href="/images/iconsList.svg#icon-search"></use>
-            </svg>
-            <div class="header-profile">
-                <svg class="header-profile__no-auth">
-                    <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
+            <div class="header-actions">
+                <svg class="header-search" width="32" height="32" @click="emit('showSearchPanel')">
+                    <use xlink:href="/images/iconsList.svg#icon-search"></use>
+                </svg>
+                <div class="header-profile">
+                    <svg class="header-profile__no-auth" width="24" height="24">
+                        <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
+                    </svg>
+                </div>
+                <svg class="header-hamburger" width="20" height="20" @click="toggleHamburger">
+                    <use v-if="!isMenuOpen.status && isMenuOpen.isDurationEnd"
+                        xlink:href="/images/iconsList.svg#icon-hamburger"></use>
+                    <use v-else xlink:href="/images/iconsList.svg#icon-close"></use>
                 </svg>
             </div>
         </div>
@@ -35,23 +43,84 @@
 </template>
 
 <script setup lang="ts">
-
+const emit = defineEmits({
+    showSearchPanel() { }
+})
+const isMenuOpen = ref({
+    status: false,
+    isDurationEnd: true
+})
+const toggleHamburger = () => {
+    if (!isMenuOpen.value.isDurationEnd) return
+    isMenuOpen.value.status = !isMenuOpen.value.status
+    isMenuOpen.value.isDurationEnd = false
+    setTimeout(() => {
+        isMenuOpen.value.isDurationEnd = true
+    }, 350)
+}
 </script>
 
 <style scoped lang="sass">
 .header 
     grid-column: left / right
-    height: 120px
+    padding: 40px 0
 .header-content
     display: flex
     flex-direction: row
     align-items: center
+    flex-wrap: wrap
     grid-column: content-start / content-end
+.header-nav
+    margin: 0 auto
 .nav-list
     list-style-type: none
     display: flex
     column-gap: 48px 
-    &__item
-        
-
+    &__link
+        text-decoration: none
+        color: inherit
+        font-weight: 500
+        line-height: 1.5
+        padding: 4px 2px
+.header-actions
+    display: flex
+    column-gap: 32px
+    align-items: center
+.header-profile
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 32px
+    height: 32px
+    border-radius: 50%
+    background-color: var(--color-gray-other-light)
+@media(min-width: 981px)
+    .header-hamburger
+        display: none
+@media(max-width: 980px)
+    .header-profile,
+    .header-profile__no-auth,
+    .header-search
+        width: 20px
+        height: 20px
+    .header-nav
+        overflow: hidden
+        width: 100%
+        order: 2
+        transition: height 0.35s ease
+        &_closed
+            height: 0
+    .nav-list
+        margin-top: 10px
+        padding-top: 10px
+        flex-direction: column
+        row-gap: 20px
+    .header-actions
+        margin-left: auto
+@media(max-width: 780px)
+    .header-logo
+        width: 92px
+        height: 28px
+    .nav-list
+        border-top: 1px solid var(--color-gray-dark)
 </style>

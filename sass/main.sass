@@ -50,8 +50,20 @@
 
 .container
     display: grid
-    grid-column-gap: 30px
+    column-gap: 30px
     grid-template-columns: [left] 1fr [content-start] repeat(12, 65px) [content-end] 1fr [right]
 
 body
     font-family: var(--font-family-base)
+    color: var(--color-black)
+svg
+    color: var(--color-black)
+
+@media(max-width: 1170px)
+    .container
+        grid-template-columns: [left] 1fr [content-start] repeat(12, 1fr) [content-end] 1fr [right]
+
+@media(max-width: 780px)
+    .container
+        grid-template-columns: [left] 15px [content-start] repeat(2, 1fr) [content-end] 15px [right]
+        column-gap: 5px
