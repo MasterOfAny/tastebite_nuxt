@@ -6,4 +6,5 @@ export default defineNuxtConfig({
     '@/sass/reset.sass',
     '@/sass/main.sass'
   ],
+  ssr: true
 })

@@ -2,7 +2,7 @@
     --font-family-base: 'Inter', sans-serif
     --font-family-secondary: 'Playfair Display', sans-serif
     --color-white: #fff
-    --color-white-secondary: #e3f1ff
+    --color-light-blue: #e3f1ff
     --color-gray-light: #f9f9f9
     --color-gray-other-light: #e8e8e8
     --color-gray-dark: #7f7f7f
@@ -56,14 +56,24 @@
 body
     font-family: var(--font-family-base)
     color: var(--color-black)
+main
+    grid-column: content-start / content-end
 svg
     color: var(--color-black)
 
 @media(max-width: 1170px)
     .container
-        grid-template-columns: [left] 1fr [content-start] repeat(12, 1fr) [content-end] 1fr [right]
+        grid-template-columns: [left] 15px [content-start] repeat(12, 1fr) [content-end] 15px [right]
 
 @media(max-width: 780px)
     .container
         grid-template-columns: [left] 15px [content-start] repeat(2, 1fr) [content-end] 15px [right]
         column-gap: 5px
+
+.tr-fade-enter-active,
+.tr-fade-leave-active
+    transition: opacity 0.5s ease
+
+.tr-fade-enter-from,
+.tr-fade-leave-to
+    opacity: 0

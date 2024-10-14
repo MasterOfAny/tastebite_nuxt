@@ -19,14 +19,16 @@
                         <div class="results-item__category">{{ item?.category || item.type }}</div>
                     </div>
                 </div>
+                <Button class="search-panel__results-btn site-btn_bw-btn">See all 343 results</Button>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import Button from '../ui/Button.vue';
 const emit = defineEmits({
-    closeSearchPanel() { }
+    closeSearchPanel() { return null }
 })
 
 const fakeData = [
@@ -36,31 +38,31 @@ const fakeData = [
         name: 'cake',
     },
     {
-        type: 'receipt',
+        type: 'recipe',
         image: '',
         name: 'almond cinnamon',
         category: 'sponge cake'
     },
     {
-        type: 'receipt',
+        type: 'recipe',
         image: '',
         name: 'almond cinnamon',
         category: 'sponge cake'
     },
     {
-        type: 'receipt',
+        type: 'recipe',
         image: '',
         name: 'almond cinnamon',
         category: 'sponge cake'
     },
     {
-        type: 'receipt',
+        type: 'recipe',
         image: '',
         name: 'almond cinnamon',
         category: 'sponge cake'
     },
     {
-        type: 'receipt',
+        type: 'recipe',
         image: '',
         name: 'almond cinnamon',
         category: 'sponge cake'
@@ -74,6 +76,7 @@ const fakeData = [
     left: 0
     right: 0
     background-color: var(--color-gray-light)
+    z-index: 1
     &__top
         position: relative
         display: flex
@@ -92,9 +95,11 @@ const fakeData = [
         right: 0
     &__results
         margin-top: 20px
+    &__results-btn
+        margin: 24px auto
 .search-panel-content
     grid-column: content-start / content-end
-    padding: 50px 0
+    padding: 50px 0 24px 0
 .results-item
     display: flex
     align-items: center
@@ -114,4 +119,5 @@ const fakeData = [
         width: 65px
         height: 65px
         border-radius: 50%
+
 </style>
