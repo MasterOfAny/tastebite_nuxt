@@ -1,38 +1,71 @@
 <template>
     <div class="main-page">
-        <div class="hero-card">
-            <div class="hero-card__image">
-                <img src="/images/main-hero.jpg" alt="">
-            </div>
-            <div class="hero-card__text">
-                <div class="hero-card__text-content">
-                    <div class="hero-card__text-trend">
-                        <svg width="20" height="20">
-                            <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
-                        </svg>
-                        <span>
-                            85% would make this again
-                        </span>
-                    </div>
-                    <h3 class="hero-card__text-title">Mighty Super Cheesecake</h3>
-                    <p class="hero-card__text-p">
-                        Look no further for a creamy and ultra smooth classic cheesecake recipe! no one can deny its
-                        simple
-                        decadence.
-                    </p>
-                    <div class="hero-card__text-arrow">
-                        <svg width="20" height="20">
-                            <use xlink:href="/images/iconsList.svg#icon-arrow"></use>
-                        </svg>
+        <section class="content-section">
+            <div class="hero-card">
+                <div class="hero-card__image">
+                    <img src="/images/main-hero.jpg" alt="">
+                </div>
+                <div class="hero-card__text">
+                    <div class="hero-card__text-content">
+                        <div class="hero-card__text-trend">
+                            <svg width="20" height="20">
+                                <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
+                            </svg>
+                            <span>
+                                85% would make this again
+                            </span>
+                        </div>
+                        <h3 class="hero-card__text-title">Mighty Super Cheesecake</h3>
+                        <p class="hero-card__text-p">
+                            Look no further for a creamy and ultra smooth classic cheesecake recipe! no one can deny its
+                            simple
+                            decadence.
+                        </p>
+                        <div class="hero-card__text-arrow">
+                            <svg width="20" height="20">
+                                <use xlink:href="/images/iconsList.svg#icon-arrow"></use>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <section class="content-section">
+        </section>
+        <section class="content-section ">
             <h2 class="content-section__header">Super Delicious</h2>
-            <div class="content-section__cards">
-                <Card v-for="item in fakeData" :key="item.name" :recipeInfo="item" withRating />
+            <div class="content-section__cards grid-scroll">
+                <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
+                    withRating />
             </div>
+        </section>
+        <section class="content-section">
+            <h2 class="content-section__header">Sweet Tooth</h2>
+            <div class="content-section__cards grid-scroll">
+                <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
+                    withRating />
+            </div>
+        </section>
+        <section class="content-section">
+            <h2 class="content-section__header">Popular categories</h2>
+            <div class="content-section__cards popular-categories">
+                <Card class="content-section__card" v-for="(item, index) in fakeData2" :key="index" :recipeInfo="item"
+                    roundImage />
+            </div>
+        </section>
+        <section class="content-section">
+            <h2 class="content-section__header">Hand-Picked Collections</h2>
+            <div class="content-section__cards hand-picked">
+                <Card class="content-section__card" v-for="(item, index) in [...fakeData, ...fakeData]" :key="index"
+                    :recipeInfo="item" withQuantity />
+            </div>
+        </section>
+        <section class="content-section">
+            <h2 class="content-section__header">Latest Recipes</h2>
+            <div class="content-section__cards latest-recipes">
+                <Card class="content-section__card"
+                    v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData, ...fakeData]" :key="index"
+                    :recipeInfo="item" />
+            </div>
+            <button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</button>
         </section>
     </div>
 </template>
@@ -49,16 +82,61 @@ const fakeData = [
     },
     {
         image: '/images/recipe-img.jpg',
-        rating: 4.6,
+        rating: 3.2,
         name: 'Mighty Super Cheesecake',
         category: 'Dessert',
         quantity: 18
     },
     {
         image: '/images/recipe-img.jpg',
-        rating: 4.6,
+        rating: 2.5,
         name: 'Mighty Super Cheesecake',
         category: 'Dessert',
+        quantity: 66
+    },
+]
+
+const fakeData2 = [
+    {
+        image: '/images/recipe-img.jpg',
+        rating: 4.6,
+        name: 'Pasta',
+        category: 'Dessert',
+        quantity: 177
+    },
+    {
+        image: '/images/recipe-img.jpg',
+        rating: 3.2,
+        name: 'Pizza',
+        category: 'Dessert',
+        quantity: 18
+    },
+    {
+        image: '/images/recipe-img.jpg',
+        rating: 2.5,
+        name: 'Vegan',
+        category: 'Dessert',
+        quantity: 66
+    },
+    {
+        image: '/images/recipe-img.jpg',
+        rating: 2.5,
+        name: 'Desserts',
+        category: 'Dessert',
+        quantity: 66
+    },
+    {
+        image: '/images/recipe-img.jpg',
+        rating: 2.5,
+        name: 'Vegan',
+        category: 'Smoothies',
+        quantity: 66
+    },
+    {
+        image: '/images/recipe-img.jpg',
+        rating: 2.5,
+        name: 'Vegan',
+        category: 'Breakfast',
         quantity: 66
     },
 ]
@@ -66,6 +144,33 @@ const fakeData = [
 </script>
 
 <style scoped lang="sass">
+.content-section
+    &+.content-section
+        margin-top: 64px
+    &__header
+        font-family: var(--font-family-secondary)
+        font-size: 36px
+        line-height: 1.22
+    &__cards
+        margin-top: 40px
+        &.grid-scroll
+            column-gap: 30px
+            .content-section__card
+                min-width: 264px
+        &.popular-categories
+            display: grid
+            grid-template-columns: repeat(auto-fit, minmax(89px,1fr))
+            gap: 30px
+        &.latest-recipes
+            display: grid
+            grid-template-columns: repeat(auto-fit, minmax(240px,1fr))
+            gap: 30px
+        &.hand-picked
+            display: grid
+            grid-template-columns: repeat(auto-fit, minmax(316px,540px))
+            gap: 30px
+.latest-recipes-load-more-btn
+    margin: 80px auto 0
 .hero-card
     display: flex
     flex-wrap: wrap
@@ -101,11 +206,7 @@ const fakeData = [
     &__text-arrow
         position: absolute
         right: 20px
-        bottom: 20px
-.content-section
-    &__cards
-        display: flex
-        column-gap: 30px
+        bottom: 20px        
 @media(min-width: 990px)
     .hero-card
         &__image
@@ -131,6 +232,15 @@ const fakeData = [
             svg
                 width: 12px
                 height: 12px
+    .latest-recipes-load-more-btn
+        margin-top: 40px
+@media(max-width: 768px)
+    .content-section
+        &__cards
+            &.popular-categories,
+            &.latest-recipes
+                gap: 15px
+            
 
     
 </style>
