@@ -7,11 +7,13 @@
         <main>
             <slot />
         </main>
+        <Footer />
     </div>
 </template>
 
 <script setup lang="ts">
 import Header from "@/components/layout/Header.vue"
+import Footer from "@/components/layout/Footer.vue"
 const SearchPanel = defineAsyncComponent(() => import("@/components/functional/SearchPanel.vue"))
 const isShowSearchPanel = ref(false)
 </script>

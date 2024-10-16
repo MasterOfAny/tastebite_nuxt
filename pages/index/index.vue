@@ -144,6 +144,8 @@ const fakeData2 = [
 </script>
 
 <style scoped lang="sass">
+.main-page
+    padding-bottom: 120px
 .content-section
     &+.content-section
         margin-top: 64px
