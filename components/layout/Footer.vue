@@ -17,7 +17,7 @@
                     <div class="footer-column__header" @click="toggleFooterColumn(1)">
                         <span>Tastebite</span>
                         <svg width="16" height="16">
-                            <use xlink:href="/images/iconsList.svg#chevron-down"></use>
+                            <use xlink:href="/images/iconsList.svg#icon-chevron-down"></use>
                         </svg>
                     </div>
                     <ul class="footer-column__links-list">
@@ -39,7 +39,7 @@
                     <div class="footer-column__header" @click="toggleFooterColumn(2)">
                         <span>Legal</span>
                         <svg width="16" height="16">
-                            <use xlink:href="/images/iconsList.svg#chevron-down"></use>
+                            <use xlink:href="/images/iconsList.svg#icon-chevron-down"></use>
                         </svg>
                     </div>
                     <ul class="footer-column__links-list">
@@ -61,7 +61,7 @@
                     <div class="footer-column__header" @click="toggleFooterColumn(3)">
                         <span>Follow</span>
                         <svg width="16" height="16">
-                            <use xlink:href="/images/iconsList.svg#chevron-down"></use>
+                            <use xlink:href="/images/iconsList.svg#icon-chevron-down"></use>
                         </svg>
                     </div>
                     <ul class="footer-column__links-list">

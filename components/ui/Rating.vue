@@ -57,7 +57,7 @@ const emit = defineEmits({
 })
 
 const wholeNumber = Math.floor(props.rating)
-const restStars = 5 - Math.round(props.rating)
+const restStars = 5 - wholeNumber - 1
 const division = Math.round((props.rating - wholeNumber) * 100)
 
 const mouseOver = ref(0)

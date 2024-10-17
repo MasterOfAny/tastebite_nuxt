@@ -1,77 +1,80 @@
 <template>
-    <div class="main-page">
-        <section class="content-section">
-            <div class="hero-card">
-                <div class="hero-card__image">
-                    <img src="/images/main-hero.jpg" alt="">
-                </div>
-                <div class="hero-card__text">
-                    <div class="hero-card__text-content">
-                        <div class="hero-card__text-trend">
-                            <svg width="20" height="20">
-                                <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
-                            </svg>
-                            <span>
-                                85% would make this again
-                            </span>
-                        </div>
-                        <h3 class="hero-card__text-title">Mighty Super Cheesecake</h3>
-                        <p class="hero-card__text-p">
-                            Look no further for a creamy and ultra smooth classic cheesecake recipe! no one can deny its
-                            simple
-                            decadence.
-                        </p>
-                        <div class="hero-card__text-arrow">
-                            <svg width="20" height="20">
-                                <use xlink:href="/images/iconsList.svg#icon-arrow"></use>
-                            </svg>
-                        </div>
+    <section class="content-section">
+        <div class="hero-card">
+            <NuxtLink to="#" class="hero-card__image">
+                <img src="/images/main-hero.jpg" alt="">
+            </NuxtLink>
+            <div class="hero-card__text">
+                <div class="hero-card__text-content">
+                    <div class="hero-card__text-trend">
+                        <svg width="20" height="20">
+                            <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
+                        </svg>
+                        <span>
+                            85% would make this again
+                        </span>
+                    </div>
+                    <NuxtLink to="#" class="hero-card__text-title">Mighty Super Cheesecake</NuxtLink>
+                    <p class="hero-card__text-p">
+                        Look no further for a creamy and ultra smooth classic cheesecake recipe! no one can deny its
+                        simple
+                        decadence.
+                    </p>
+                    <div class="hero-card__text-arrow">
+                        <svg width="20" height="20">
+                            <use xlink:href="/images/iconsList.svg#icon-arrow"></use>
+                        </svg>
                     </div>
                 </div>
             </div>
-        </section>
-        <section class="content-section ">
-            <h2 class="content-section__header">Super Delicious</h2>
-            <div class="content-section__cards grid-scroll">
-                <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
-                    withRating />
-            </div>
-        </section>
-        <section class="content-section">
-            <h2 class="content-section__header">Sweet Tooth</h2>
-            <div class="content-section__cards grid-scroll">
-                <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
-                    withRating />
-            </div>
-        </section>
-        <section class="content-section">
-            <h2 class="content-section__header">Popular categories</h2>
-            <div class="content-section__cards popular-categories">
-                <Card class="content-section__card" v-for="(item, index) in fakeData2" :key="index" :recipeInfo="item"
-                    roundImage />
-            </div>
-        </section>
-        <section class="content-section">
-            <h2 class="content-section__header">Hand-Picked Collections</h2>
-            <div class="content-section__cards hand-picked">
-                <Card class="content-section__card" v-for="(item, index) in [...fakeData, ...fakeData]" :key="index"
-                    :recipeInfo="item" withQuantity />
-            </div>
-        </section>
-        <section class="content-section">
-            <h2 class="content-section__header">Latest Recipes</h2>
-            <div class="content-section__cards latest-recipes">
-                <Card class="content-section__card"
-                    v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData, ...fakeData]" :key="index"
-                    :recipeInfo="item" />
-            </div>
-            <button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</button>
-        </section>
-    </div>
+        </div>
+    </section>
+    <section class="content-section ">
+        <h2 class="content-section__header">Super Delicious</h2>
+        <div class="content-section__cards grid-scroll">
+            <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
+                withRating />
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="content-section__header">Sweet Tooth</h2>
+        <div class="content-section__cards grid-scroll">
+            <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
+                withRating />
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="content-section__header">Popular categories</h2>
+        <div class="content-section__cards popular-categories">
+            <Card class="content-section__card" v-for="(item, index) in fakeData2" :key="index" :recipeInfo="item"
+                roundImage />
+        </div>
+    </section>
+    <section class="content-section newsletter-section">
+        <Newsletter />
+    </section>
+    <section class="content-section">
+        <h2 class="content-section__header">Hand-Picked Collections</h2>
+        <div class="content-section__cards hand-picked">
+            <Card class="content-section__card" v-for="(item, index) in [...fakeData, ...fakeData]" :key="index"
+                :recipeInfo="item" withQuantity />
+        </div>
+    </section>
+    <section class="content-section">
+        <h2 class="content-section__header">Latest Recipes</h2>
+        <div class="content-section__cards latest-recipes">
+            <Card class="content-section__card"
+                v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData, ...fakeData]" :key="index"
+                :recipeInfo="item" />
+        </div>
+        <button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</button>
+    </section>
 </template>
 
 <script setup lang="ts">
 import Card from "@/components/ui/Card.vue"
+import Newsletter from "~/components/functional/Newsletter.vue";
+
 const fakeData = [
     {
         image: '/images/recipe-img.jpg',
@@ -145,8 +148,9 @@ const fakeData2 = [
 
 <style scoped lang="sass">
 .main-page
-    padding-bottom: 120px
+    padding-bottom: 120px        
 .content-section
+    grid-column: content-start / content-end
     &+.content-section
         margin-top: 64px
     &__header
@@ -163,14 +167,22 @@ const fakeData2 = [
             display: grid
             grid-template-columns: repeat(auto-fit, minmax(89px,1fr))
             gap: 30px
-        &.latest-recipes
-            display: grid
-            grid-template-columns: repeat(auto-fit, minmax(240px,1fr))
-            gap: 30px
         &.hand-picked
-            display: grid
-            grid-template-columns: repeat(auto-fit, minmax(316px,540px))
-            gap: 30px
+            display: flex
+            flex-wrap: wrap
+            margin-left: -15px
+            margin-right: -15px
+            .content-section__card
+                width: 50%
+                padding: 15px
+        &.latest-recipes
+            display: flex
+            flex-wrap: wrap
+            margin-left: -15px
+            margin-right: -15px
+            .content-section__card
+                width: 25%
+                padding: 15px
 .latest-recipes-load-more-btn
     margin: 80px auto 0
 .hero-card
@@ -202,13 +214,55 @@ const fakeData2 = [
         font-family: var(--font-family-secondary)
         font-size: 45px
         line-height: 1.24
+        transition: color 0.3s 
+        text-decoration: none
     &__text-p
         font-size: 18px
         line-height: 1.56
     &__text-arrow
         position: absolute
         right: 20px
-        bottom: 20px        
+        bottom: 20px       
+        transition:  background-color 0.3s 
+    &:hover
+        .hero-card__text-title
+            color: var(--color-orange)
+        .hero-card__text-arrow
+            display: flex
+            justify-content: center
+            align-items: center
+            width: 40px
+            height: 40px
+            border-radius: 50%
+            background-color: var(--color-white)
+            right: 10px
+            bottom: 14px
+            svg
+                color: var(--color-orange)
+.newsletter-section
+    grid-column: left / right
+.newsletter
+    padding: 104px 0 110px 0
+    &:deep(.newsletter-content)
+        max-width: 553px
+        margin: 0 auto
+    &:deep(.newsletter__title)
+        font-weight: 700
+        font-size: 76px
+        line-height: 1.13
+        text-align: center
+    &:deep(.newsletter__text)
+        margin-top: 16px
+        font-size: 24px
+        line-height: 1.58
+        text-align: center
+    &:deep(.newsletter__files)
+        margin-top: 21px
+        font-size: 12px
+        line-height: 1.25
+        text-align: center
+    &:deep(form)
+        margin-top: 24px
 @media(min-width: 990px)
     .hero-card
         &__image
@@ -234,15 +288,64 @@ const fakeData2 = [
             svg
                 width: 12px
                 height: 12px
+    .content-section
+        &__cards
+            margin-top: 24px
+            &.latest-recipes
+                .content-section__card
+                    width: 33.33%
     .latest-recipes-load-more-btn
         margin-top: 40px
 @media(max-width: 768px)
     .content-section
+        &__header
+            font-size: 24px
+            line-height: 1.54
+        &+.content-section
+            margin-top: 56px
         &__cards
-            &.popular-categories,
+            margin-top: 24px
+            &.hand-picked
+                margin-left: -8px
+                margin-right: -8px
+                .content-section__card
+                    padding: 8px
+                    width: 100%
             &.latest-recipes
-                gap: 15px
-            
-
-    
+                margin-left: -8px
+                margin-right: -8px
+                .content-section__card
+                    padding: 8px
+                    width: 50%
+    .newsletter
+        padding: 56px 21px
+        &:deep(.newsletter-content)
+            max-width: 320px
+        &:deep(.newsletter__title)
+            font-size: 36px
+            line-height: 1.22
+        &:deep(.newsletter__text)
+            margin-top: 8px
+            font-size: 16px
+            line-height: 1.5
+            font-weight: 300
+        &:deep(.newsletter__files)
+            margin-top: 16px
+            font-size: 10px
+            line-height: 1.6
+        &:deep(form)
+            margin-top: 15px    
+            display: grid
+            gap: 13px
+        &:deep(.newsletter__input)
+            border-radius: 4px
+            padding: 13px 13px 13px 48px
+            height: 48px
+        &:deep(.newsletter__btn)
+            width: 100%
+            padding: 0
+            height: 48px
+            border-color: transparent
+        &:deep(.newsletter__input-container svg)
+            display: block
 </style>

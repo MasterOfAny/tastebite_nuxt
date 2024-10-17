@@ -2,7 +2,7 @@
     <div class="search-panel container">
         <div class="search-panel-content">
             <div class="search-panel__top">
-                <input class="search-panel__input" type="text" placeholder="Search..." />
+                <input class="search-panel__input tb-input" type="text" placeholder="Search..." />
                 <svg class="search-panel__close" width="20" height="20" @click="emit('closeSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-close"></use>
                 </svg>
@@ -82,10 +82,7 @@ const fakeData = [
         display: flex
         align-items: center
     &__input
-        outline: none
-        border: none
         border-bottom: 1px solid var(--color-gray-dark)
-        background-color: transparent
         padding: 10px 24px 10px 0
         font-size: 18px
         flex: 1

@@ -66,13 +66,14 @@ const props = defineProps({
             margin-left: auto
             white-space: nowrap
     &__name
-        margin: 0 20px 20px 0   
         font-weight: 600
         font-size: 20px
         line-height: 1.4
         text-decoration: none
         color: inherit
         transition: color 0.3s
+        & + .site-btn
+            margin-top: 20px
     &:hover
         .recipe-card__image
             border-color: var(--color-orange)

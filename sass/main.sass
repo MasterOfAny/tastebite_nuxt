@@ -52,14 +52,26 @@
     display: grid
     column-gap: 30px
     grid-template-columns: [left] 1fr [content-start] repeat(12, 65px) [content-end] 1fr [right]
-
+html,
+body,
+#__nuxt,
+#__nuxt>div:first-child
+    height: 100%
 body
     font-family: var(--font-family-base)
     color: var(--color-black)
 main
-    grid-column: content-start / content-end
+    grid-column: left / right
+    flex: 1 0 auto
 svg
     color: var(--color-black)
+a
+    transition: color 0.3s
+    color: inherit
+.default-layout
+    display: flex
+    flex-direction: column
+    height: 100%
 .grid-scroll
     display: grid
     grid-auto-flow: column
@@ -100,6 +112,15 @@ svg
         pointer-events: none
         background-color: var(--color-gray-other-light)
         border-color: var(--color-gray-other-light)
+.tb-input
+    outline: none
+    border: none
+    background-color: transparent
+.file-link
+    text-decoration-color: var(--color-orange)
+    &:hover
+        color: var(--color-orange)
+
 @media(max-width: 1170px)
     .container
         grid-template-columns: [left] 15px [content-start] repeat(12, 1fr) [content-end] 15px [right]

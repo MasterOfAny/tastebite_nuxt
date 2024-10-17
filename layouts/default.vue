@@ -4,7 +4,7 @@
         <Transition name="tr-fade">
             <SearchPanel v-if="isShowSearchPanel" @close-search-panel="isShowSearchPanel = false" />
         </Transition>
-        <main>
+        <main class="container">
             <slot />
         </main>
         <Footer />
@@ -19,4 +19,11 @@ const isShowSearchPanel = ref(false)
 </script>
 
 <style lang="sass">
+.default-layout
+    main
+        padding-bottom: 120px
+@media(max-width: 990px)
+    .default-layout
+        main
+            padding-bottom: 80px
 </style>
