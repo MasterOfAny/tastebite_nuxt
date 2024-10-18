@@ -1,12 +1,13 @@
 <template>
     <div
-        :class="{ 'recipe-card': true, 'recipe-card_round': props.roundImage, 'recipe-card_quantity': props.withQuantity }">
+        :class="{ 'recipe-card': true, 'recipe-card_round': props.roundImage, 'recipe-card_quantity': props.withQuantity, 'recipe-card_two-columns': props.twoColumns }">
         <NuxtLink to="#" class="recipe-card__image">
             <img :src="props.recipeInfo?.image" alt="">
         </NuxtLink>
         <Rating v-if="props.withRating" class="recipe-card__rating" :rating="props.recipeInfo?.rating || 2.77" />
         <div class="recipe-card__name-block">
-            <NuxtLink to="#" class="recipe-card__name">{{ props.recipeInfo?.name }}</NuxtLink>
+            <NuxtLink to="#" class="recipe-card__name" :title="props.recipeInfo?.name">{{ props.recipeInfo?.name }}
+            </NuxtLink>
             <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity">{{ props.recipeInfo?.quantity + ' ' +
                 getNoun(props.recipeInfo?.quantity, 'Recipe', 'Recipes', 'Recipes') }}</span>
         </div>
@@ -35,6 +36,10 @@ const props = defineProps({
         default: false
     },
     roundImage: {
+        type: Boolean,
+        default: false
+    },
+    twoColumns: {
         type: Boolean,
         default: false
     }
@@ -72,6 +77,11 @@ const props = defineProps({
         text-decoration: none
         color: inherit
         transition: color 0.3s
+        display: -webkit-box
+        -webkit-line-clamp: 2
+        -webkit-box-orient: vertical
+        overflow: hidden
+        text-overflow: ellipsis
         & + .site-btn
             margin-top: 20px
     &:hover
@@ -99,6 +109,21 @@ const props = defineProps({
             padding: 32px
             border: 1px solid var(--color-gray-other-light)
             border-radius: 0px 0px 12px 12px
+    &_two-columns
+        grid-template-columns: 127px 1fr
+        grid-template-rows: 1fr
+        column-gap: 16px
+        height: 95px
+        .recipe-card__rating
+            margin-top: 6px
+            grid-column: 2
+            grid-row: 1
+            height: 16px
+        .recipe-card__name-block
+            grid-column: 2
+            grid-row: 1
+            margin-top: 30px
+            display: block
 @media(max-width: 768px)
     .recipe-card:not(.recipe-card_quantity)
         .recipe-card__name

@@ -38,6 +38,8 @@ import Button from "@/components/ui/Button.vue";
             top: 13px
             color: var(--color-gray-dark)
             display: none
+    &__title
+        font-family: var(--font-family-secondary)
     &__input
         background-color: var(--color-white)
         padding: 18px 12px
