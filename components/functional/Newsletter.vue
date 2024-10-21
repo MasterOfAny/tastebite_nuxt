@@ -12,7 +12,7 @@
                     </svg>
                     <input class="newsletter__input tb-input" type="text" placeholder="Email Address" />
                 </div>
-                <Button class="newsletter__btn" type="submit">join</Button>
+                <Button class="newsletter__btn" orangeButton type="submit">join</Button>
             </form>
             <p class="newsletter__files">
                 By joining our newsletter you agree to our
@@ -48,16 +48,12 @@ import Button from "@/components/ui/Button.vue";
         height: 100%
     &__btn
         padding: 18px 42px
-        background-color: var(--color-orange)
-        color: var(--color-white)
         text-transform: uppercase   
         font-size: 18px
         font-weight: 600
         line-height: 1.56
         border-color: var(--color-white)
         border-radius: 2px
-        &:hover
-            filter: brightness(1.5)
     form
         display: flex
         width: 100%

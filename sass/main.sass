@@ -8,6 +8,7 @@
     --color-gray-dark: #7f7f7f
     --color-orange-light: #ffd7c9
     --color-orange: #ff642f
+    --color-orange-hover: #ff8051
     --color-black: #000
     --color-system-danger: #ff3030
     --color-system-success: #60dc8c
@@ -99,19 +100,25 @@ a
     &_bw-btn
         padding: 0 24px
         height: 29px
-    &:hover
-        background-color: var(--color-black)
+        &:hover
+            background-color: var(--color-black)
+            color: var(--color-white)
+        &:disabled
+            cursor: default
+            pointer-events: none
+            background-color: var(--color-gray-other-light)
+            border-color: var(--color-gray-other-light)
+    &_orange
+        background-color: var(--color-orange)
         color: var(--color-white)
-    &:active
-        transition: none
-        background-color: var(--color-white)
-        color: var(--color-black)
-        box-shadow: 0 0 8px 8px rgba(34, 60, 80, 0.2)
-    &:disabled
-        cursor: default
-        pointer-events: none
-        background-color: var(--color-gray-other-light)
-        border-color: var(--color-gray-other-light)
+        border-color: transparent
+        &:hover
+            background-color: var(--color-orange-hover)
+        &:disabled
+            cursor: default
+            pointer-events: none
+            background-color: var(--color-orange-light)
+            color: var(--color-black)
 .tb-input
     outline: none
     border: none

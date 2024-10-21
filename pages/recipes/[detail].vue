@@ -1,128 +1,143 @@
 <template>
     <div class="recipe-page">
-        <div class="page-top">
-            <div class="page-top__actions-panel">
-                <div class="page-top__trend">
-                    <svg width="24" height="24">
-                        <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
-                    </svg>
-                    <span>
-                        {{ data.recipeInfo?.trend }}% would make this again
-                    </span>
-                </div>
-                <div class="page-top__actions">
-                    <svg width="32" height="32">
-                        <use xlink:href="/images/iconsList.svg#icon-print"></use>
-                    </svg>
-                    <svg width="32" height="32">
-                        <use xlink:href="/images/iconsList.svg#icon-bookmark"></use>
-                    </svg>
-                </div>
-            </div>
-            <h1>{{ data.recipeInfo?.name }}</h1>
-            <div class="page-top__info">
-                <div class="page-top__author page-top__info_flex">
-                    <div class="author-avatar">
-                        <img width="32" height="32" :src="data.recipeInfo?.author?.image" alt="">
+        <section>
+            <div class="page-top">
+                <div class="page-top__actions-panel">
+                    <div class="page-top__trend">
+                        <svg width="24" height="24">
+                            <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
+                        </svg>
+                        <span>
+                            {{ data.recipeInfo?.trend }}% would make this again
+                        </span>
                     </div>
-                    <span>{{ data.recipeInfo?.author?.name }}</span>
+                    <div class="page-top__actions">
+                        <svg width="32" height="32">
+                            <use xlink:href="/images/iconsList.svg#icon-print"></use>
+                        </svg>
+                        <svg width="32" height="32">
+                            <use xlink:href="/images/iconsList.svg#icon-bookmark"></use>
+                        </svg>
+                    </div>
                 </div>
-                <div class="page-top__date page-top__info_flex">
-                    <svg width="16" height="16">
-                        <use xlink:href="/images/iconsList.svg#icon-calendar"></use>
-                    </svg>
-                    <time datetime="">{{ data.recipeInfo?.date }}</time>
-                </div>
-                <a href="#comments" class="page-top__comments page-top__info_flex">
-                    <svg width="16" height="16">
-                        <use xlink:href="/images/iconsList.svg#icon-comment"></use>
-                    </svg>
-                    <span>{{ data.comments?.total }}</span>
-                </a>
-                <div class="page-top__rating">
-                    <Rating :rating="data.recipeInfo?.rating" />
+                <h1>{{ data.recipeInfo?.name }}</h1>
+                <div class="page-top__info">
+                    <div class="page-top__author page-top__info_flex">
+                        <div class="author-avatar">
+                            <img width="32" height="32" :src="data.recipeInfo?.author?.image" alt="">
+                        </div>
+                        <span>{{ data.recipeInfo?.author?.name }}</span>
+                    </div>
+                    <div class="page-top__date page-top__info_flex">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/iconsList.svg#icon-calendar"></use>
+                        </svg>
+                        <time datetime="">{{ data.recipeInfo?.date }}</time>
+                    </div>
+                    <a href="#comments" class="page-top__comments page-top__info_flex">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/iconsList.svg#icon-comment"></use>
+                        </svg>
+                        <span>{{ data.comments?.total }}</span>
+                    </a>
+                    <div class="page-top__rating">
+                        <Rating :rating="data.recipeInfo?.rating" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="page-recipe">
-            <div class="page-recipe__annotation">
-                <p>
-                    {{ data.recipeInfo?.annotation }}
-                </p>
-            </div>
-            <div class="page-recipe__media">
-                <img v-if="!data.recipeInfo?.video && data.recipeInfo?.image" width="600" height="380"
-                    :src="data.recipeInfo.image" alt="">
-                <!--  <iframe v-else width="560" height="315"
+            <div class="page-recipe">
+                <div class="page-recipe__annotation">
+                    <p>
+                        {{ data.recipeInfo?.annotation }}
+                    </p>
+                </div>
+                <div class="page-recipe__media">
+                    <img v-if="!data.recipeInfo?.video && data.recipeInfo?.image" width="600" height="380"
+                        :src="data.recipeInfo.image" alt="">
+                    <!--  <iframe v-else width="560" height="315"
                     src="https://www.youtube.com/embed/fZ13nRpZIAU?si=mxX5I4Fyg01yHunn" title="YouTube video player"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-            </div>
-            <div class="page-recipe__content container">
-                <div class="page-recipe__column-left">
-                    <div class="recipe-time">
-                        <div class="recipe-time__item">
-                            <span>prep time</span>
-                            <span>{{ data.stats?.prepTime }} min</span>
-                        </div>
-                        <div class="recipe-time__item">
-                            <span>total time</span>
-                            <span>{{ data.stats?.totalTime }} min</span>
-                        </div>
-                        <div class="recipe-time__item">
-                            <span>servings</span>
-                            <span>{{ data.stats?.servings }} min</span>
-                        </div>
-                    </div>
-                    <div class="recipe-ingridients">
-                        <h2 class="recipe-page__minor-header">Ingridients</h2>
-                        <div class="recipe-ingridients__list">
-                            <div v-for="(item, index) in data.ingridients" class="recipe-ingridients__item">
-                                <Checkbox :name="'ing-' + index" self-checked>
-                                    {{ item }}
-                                </Checkbox>
+                </div>
+                <div class="page-recipe__content container">
+                    <div class="page-recipe__column-left">
+                        <div class="recipe-time">
+                            <div class="recipe-time__item">
+                                <span>prep time</span>
+                                <span>{{ data.stats?.prepTime }} min</span>
+                            </div>
+                            <div class="recipe-time__item">
+                                <span>total time</span>
+                                <span>{{ data.stats?.totalTime }} min</span>
+                            </div>
+                            <div class="recipe-time__item">
+                                <span>servings</span>
+                                <span>{{ data.stats?.servings }} min</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="recipe-instructions">
-                        <h2 class="recipe-page__minor-header">Instructions</h2>
-                        <ol class="recipe-instructions__list">
-                            <li v-for="(item, index) in data.instructions" :key="index"
-                                class="recipe-instructions__item">
-                                {{ item }}
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-                <div class="page-recipe__column-right">
-                    <div class="recipe-nutrition">
-                        <div class="recipe-nutrition__content">
-                            <h2 class="recipe-page__minor-header">Nutrition Facts</h2>
-                            <div class="recipe-nutrition__facts">
-                                <div v-for="fact in data.nutritionFacts" :key="fact.name"
-                                    class="recipe-nutrition__fact">
-                                    <span>
-                                        {{ fact.name }}
-                                    </span>
-                                    <span>
-                                        {{ fact.value }}
-                                    </span>
+                        <div class="recipe-ingridients">
+                            <h2 class="recipe-page__minor-header">Ingridients</h2>
+                            <div class="recipe-ingridients__list">
+                                <div v-for="(item, index) in data.ingridients" class="recipe-ingridients__item">
+                                    <Checkbox :name="'ing-' + index" self-checked>
+                                        {{ item }}
+                                    </Checkbox>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="fresh-recipes">
-                        <h2 class="recipe-page__minor-header">Fresh Recipes</h2>
-                        <div class="fresh-recipes__list">
-                            <Card v-for="item in fakeData" :key="item?.name" class="fresh-recipes__item"
-                                :recipe-info="item" two-columns with-rating />
+                        <div class="recipe-instructions">
+                            <h2 class="recipe-page__minor-header">Instructions</h2>
+                            <ol class="recipe-instructions__list">
+                                <li v-for="(item, index) in data.instructions" :key="index"
+                                    class="recipe-instructions__item">
+                                    {{ item }}
+                                </li>
+                            </ol>
                         </div>
                     </div>
-                    <Newsletter />
+                    <div class="page-recipe__column-right">
+                        <div class="recipe-nutrition">
+                            <div class="recipe-nutrition__content">
+                                <h2 class="recipe-page__minor-header">Nutrition Facts</h2>
+                                <div class="recipe-nutrition__facts">
+                                    <div v-for="fact in data.nutritionFacts" :key="fact.name"
+                                        class="recipe-nutrition__fact">
+                                        <span>
+                                            {{ fact.name }}
+                                        </span>
+                                        <span>
+                                            {{ fact.value }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fresh-recipes">
+                            <h2 class="recipe-page__minor-header">Fresh Recipes</h2>
+                            <div class="fresh-recipes__list">
+                                <Card v-for="item in fakeData" :key="item?.name" class="fresh-recipes__item"
+                                    :recipe-info="item" two-columns with-rating />
+                            </div>
+                        </div>
+                        <Newsletter />
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+        <section id="comments" class="comments-block">
+            <div class="comments-block__header">
+                <h2>Comments</h2>
+                <span v-if="data.comments?.total">({{ data.comments.total }})</span>
+            </div>
+            <CommentForm />
+            <Select :options="selectOptions" placeholder="Sort by" @select="(value) => selectedOption = value"
+                :selected-option="selectedOption" />
+            <div class="comments-block__list">
+                <Comment v-for="(item, index) in data.comments.items" :key="index" :comment="item"
+                    class="comments-block__list-item" />
+            </div>
+        </section>
     </div>
 </template>
 
@@ -131,6 +146,16 @@ import Rating from '~/components/ui/Rating.vue';
 import Checkbox from '~/components/ui/Checkbox.vue';
 import Newsletter from '~/components/functional/Newsletter.vue';
 import Card from '~/components/ui/Card.vue';
+import CommentForm from '~/components/functional/CommentForm.vue';
+const Select = defineAsyncComponent(() => import('~/components/ui/Select.vue'))
+const Comment = defineAsyncComponent(() => import('~/components/ui/Comment.vue'))
+const selectOptions = [
+    { id: '1', value: 'Most Recent' },
+    { id: '2', value: 'Most Helpful' },
+    { id: '3', value: 'Oldest' },
+    { id: '4', value: 'Ratings' },
+]
+const selectedOption = ref(selectOptions[0])
 const data = {
     stats: {
         prepTime: 30,
@@ -207,28 +232,64 @@ const data = {
         perPage: 5,
         items: [
             {
-                author: 'Jelanee Uwaezuoke',
+                author: {
+                    name: 'Jelanee Uwaezuoke',
+                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+                },
                 date: 'Jan 15, 2022',
                 text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
+                rating: 4,
                 likes: 4,
                 replies: [
                     {
-                        author: 'Jelanee Uwaezuoke',
+                        author: {
+                            name: 'Jelanee Uwaezuoke R',
+                            img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+                        },
                         date: 'Jan 15, 2022',
-                        text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
+                        text: 'Reply',
+                        rating: 4,
                         likes: 4,
-                        replies: []
+                        replies: [
+                            {
+                                author: {
+                                    name: 'Jelanee Uwaezuoke R',
+                                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+                                },
+                                date: 'Jan 15, 2022',
+                                text: 'Reply',
+                                likes: 4,
+                                replies: []
+                            },
+                            {
+                                author: {
+                                    name: 'Jelanee Uwaezuoke R',
+                                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+                                },
+                                date: 'Jan 15, 2022',
+                                text: 'Reply',
+                                likes: 4,
+                                replies: []
+                            }
+                        ]
                     }
                 ]
             },
             {
-                author: 'Jelanee Uwaezuoke',
+                author: {
+                    name: 'Jelanee Uwaezuoke',
+                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+                },
                 date: 'Jan 15, 2022',
                 text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
                 likes: 4,
+                rating: 3,
                 replies: [
                     {
-                        author: 'Jelanee Uwaezuoke',
+                        author: {
+                            name: 'Jelanee Uwaezuoke',
+                            img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
+                        },
                         date: 'Jan 15, 2022',
                         text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
                         likes: 4,
@@ -285,6 +346,9 @@ const fakeData = [
             font-weight: 500
             font-size: 14px
             line-height: 1.29
+    &__rating
+        display: flex
+        align-items: center
     &__actions
         display: grid
         grid-auto-flow: column
@@ -429,6 +493,7 @@ const fakeData = [
     .newsletter__btn
         height: 48px
         width: 100%
+        border-color: var(--color-orange)
     .newsletter__files
         margin-top: 16px
         font-size: 10px
@@ -436,6 +501,21 @@ const fakeData = [
         max-width: 213px
     .newsletter__input-container svg
         display: block
+.comments-block
+    margin-top: 120px
+    &__header
+        display: flex
+        align-items: flex-end
+        column-gap: 16px
+        h2
+            font-family: var(--font-family-secondary)
+            font-size: 60px
+            line-height: 1.2
+        span
+            font-size: 24px
+            line-height: 1.58
+    &__list
+        margin-left: -48px
 @media(max-width: 1170px)
     .page-recipe
         &__column-left
@@ -521,5 +601,16 @@ const fakeData = [
         margin-top: 40px
     .page-recipe__column-right:deep(.newsletter)
         margin-top: 40px
+    .comments-block
+        margin-top: 40px
+        &__header
+            h2
+                font-size: 30px
+                line-height: 1.23
+            span
+                font-size: 12px
+                line-height: 1.25
+        &__list
+            margin-left: -16px
 
 </style>
