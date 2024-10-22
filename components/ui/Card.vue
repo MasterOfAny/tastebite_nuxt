@@ -4,11 +4,13 @@
         <NuxtLink to="#" class="recipe-card__image">
             <img :src="props.recipeInfo?.image" alt="">
         </NuxtLink>
-        <Rating v-if="props.withRating" class="recipe-card__rating" :rating="props.recipeInfo?.rating || 2.77" />
+        <Rating v-if="props.withRating && props.recipeInfo?.rating" class="recipe-card__rating"
+            :rating="props.recipeInfo?.rating || 2.77" />
         <div class="recipe-card__name-block">
             <NuxtLink to="#" class="recipe-card__name" :title="props.recipeInfo?.name">{{ props.recipeInfo?.name }}
             </NuxtLink>
-            <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity">{{ props.recipeInfo?.quantity + ' ' +
+            <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity && props.recipeInfo?.quantity">{{
+                props.recipeInfo?.quantity + ' ' +
                 getNoun(props.recipeInfo?.quantity, 'Recipe', 'Recipes', 'Recipes') }}</span>
         </div>
     </div>
@@ -20,10 +22,10 @@ const props = defineProps({
     recipeInfo: {
         type: Object as () => {
             image: string,
-            rating: number,
-            category: string,
+            rating?: number,
+            category?: string,
             name: string,
-            quantity: number
+            quantity?: number
         },
         default: {}
     },
