@@ -74,6 +74,11 @@
 <script setup lang="ts">
 import Card from "@/components/ui/Card.vue"
 import Newsletter from "~/components/functional/Newsletter.vue";
+onMounted(async () => {
+    const recipes = await $fetch('/api/prisma/get-all-recipes')
+    console.log(recipes);
+
+})
 
 const fakeData = [
     {
