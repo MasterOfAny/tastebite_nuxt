@@ -13,14 +13,73 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Recipes {
-  id          Int       @id @default(autoincrement())
-  image       String
+model User {
+  id          String @id @default(uuid()) @db.Uuid
+  photo       String
+  name        String @db.VarChar(100)
+  user_name   String @db.VarChar(100) @unique
+  email       String @db.VarChar(100) @unique
+  hash        String @map("password_hash")
+  accounts    String[]
+  newsletter  Boolean
+  recipes     Recipe[] @relation("recipesByAuthor")
+  favorites   Recipe[] @relation("recipesByFavorite")
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @updatedAt
+  @@map("users")
+  Comment Comment[] @relation(name: "commentsByUser")
+}
+
+model NutritionFact {
+  id       String   @id @default(uuid()) @db.Uuid
+  name     String
+  value    String
+  Recipe Recipe[]
+  @@map("nutrition_facts")
+}
+
+model Recipe {
+  id          String @id @default(uuid()) @db.Uuid
+  author_id   String
+  author      User  @relation(fields: [author_id], references: [id], name: "recipesByAuthor")
+  favorites   User[] @relation("recipesByFavorite")
+  image       String?
+  video       String?
   rating      Int
   name        String
-  category    String
-  quantity    Int
+  category_id String
+  category    Category @relation(fields: [category_id],references: [id], name: "recipesByCategory")
+  trend       Int
+  annotation  String?
+  ingridients String[]
+  nutrition   NutritionFact[]
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
-
-
+  updated_at  DateTime @updatedAt
+  @@map("recipes")
+  Comment Comment[] @relation(name: "commentsByRecipe")
 }
+
+model Category {
+  id          String @id @default(uuid()) @db.Uuid
+  name        String
+  image       String
+  recipes     Recipe[] @relation("recipesByCategory")
+  @@map("categories")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id], name: "commentsByUser")
+  recipe_id String
+  recipe    Recipe   @relation(fields: [recipe_id], references: [id], name: "commentsByRecipe")
+  text      String
+  likes     Int
+  replies   Comment[] @relation("CommentToReply")
+  parent    Comment? @relation("CommentToReply", fields: [parentid], references: [id])
+  parentid  String?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt
+  @@map("comments")
+}
+
