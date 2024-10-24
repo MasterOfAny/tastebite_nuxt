@@ -40,14 +40,14 @@ model NutritionFact {
 
 model Recipe {
   id          String @id @default(uuid()) @db.Uuid
-  author_id   String
+  author_id   String @db.Uuid
   author      User  @relation(fields: [author_id], references: [id], name: "recipesByAuthor")
   favorites   User[] @relation("recipesByFavorite")
   image       String?
   video       String?
   rating      Int
   name        String
-  category_id String
+  category_id String  @db.Uuid
   category    Category @relation(fields: [category_id],references: [id], name: "recipesByCategory")
   trend       Int
   annotation  String?
@@ -69,15 +69,15 @@ model Category {
 
 model Comment {
   id        String   @id @default(uuid()) @db.Uuid
-  user_id   String
+  user_id   String  @db.Uuid
   user      User     @relation(fields: [user_id], references: [id], name: "commentsByUser")
-  recipe_id String
+  recipe_id String  @db.Uuid
   recipe    Recipe   @relation(fields: [recipe_id], references: [id], name: "commentsByRecipe")
   text      String
   likes     Int
   replies   Comment[] @relation("CommentToReply")
   parent    Comment? @relation("CommentToReply", fields: [parentid], references: [id])
-  parentid  String?
+  parentid  String? @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime @updatedAt
   @@map("comments")
