@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id          String @id @default(uuid()) @db.Uuid
-  photo       String
+  photo       String?
   name        String @db.VarChar(100)
   user_name   String @db.VarChar(100) @unique
   email       String @db.VarChar(100) @unique
@@ -28,14 +28,6 @@ model User {
   updated_at  DateTime @updatedAt
   @@map("users")
   Comment Comment[] @relation(name: "commentsByUser")
-}
-
-model NutritionFact {
-  id       String   @id @default(uuid()) @db.Uuid
-  name     String
-  value    String
-  Recipe Recipe[]
-  @@map("nutrition_facts")
 }
 
 model Recipe {
@@ -52,12 +44,15 @@ model Recipe {
   trend       Int
   annotation  String?
   ingridients String[]
-  nutrition   NutritionFact[]
+  nutrition   Json
+  stats       Json
+  directions  String[]
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime @updatedAt
   @@map("recipes")
   Comment Comment[] @relation(name: "commentsByRecipe")
 }
+
 
 model Category {
   id          String @id @default(uuid()) @db.Uuid
@@ -75,6 +70,7 @@ model Comment {
   recipe    Recipe   @relation(fields: [recipe_id], references: [id], name: "commentsByRecipe")
   text      String
   likes     Int
+  rating    Int
   replies   Comment[] @relation("CommentToReply")
   parent    Comment? @relation("CommentToReply", fields: [parentid], references: [id])
   parentid  String? @db.Uuid
