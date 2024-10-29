@@ -1,32 +1,29 @@
 <template>
     <div
         :class="{ 'recipe-card': true, 'recipe-card_round': props.roundImage, 'recipe-card_quantity': props.withQuantity, 'recipe-card_two-columns': props.twoColumns }">
-        <NuxtLink to="#" class="recipe-card__image">
+        <NuxtLink :to="`/recipes/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__image">
             <img :src="props.recipeInfo?.image" alt="">
         </NuxtLink>
         <Rating v-if="props.withRating && props.recipeInfo?.rating" class="recipe-card__rating"
             :rating="props.recipeInfo?.rating || 2.77" />
         <div class="recipe-card__name-block">
-            <NuxtLink to="#" class="recipe-card__name" :title="props.recipeInfo?.name">{{ props.recipeInfo?.name }}
+            <NuxtLink :to="`/recipes/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__name"
+                :title="props.recipeInfo?.name">{{ props.recipeInfo?.name }}
             </NuxtLink>
-            <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity && props.recipeInfo?.quantity">{{
-                props.recipeInfo?.quantity + ' ' +
-                getNoun(props.recipeInfo?.quantity, 'Recipe', 'Recipes', 'Recipes') }}</span>
+            <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity && props.recipeInfo?.recipes.length">{{
+                props.recipeInfo?.recipes.length + ' ' +
+                getNoun(props.recipeInfo?.recipes.length, 'Recipe', 'Recipes', 'Recipes') }}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import type { Recipe, Collections } from '~/types/types';
+import processLink from '@/composables/processLink';
 const Rating = defineAsyncComponent(() => import('@/components/ui/Rating.vue'))
 const props = defineProps({
     recipeInfo: {
-        type: Object as () => {
-            image: string,
-            rating?: number,
-            category?: string,
-            name: string,
-            quantity?: number
-        },
+        type: Object as () => Recipe & Collections,
         default: {}
     },
     withRating: {

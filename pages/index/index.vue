@@ -1,8 +1,8 @@
 <template>
     <section class="content-section">
         <div class="hero-card">
-            <NuxtLink to="#" class="hero-card__image">
-                <img src="/images/main-hero.jpg" alt="">
+            <NuxtLink :to="`/recipes/${processLink(randomRecipe?.name, true)}`" class="hero-card__image">
+                <img :src="randomRecipe?.image || '/images/no-image.svg'" alt="">
             </NuxtLink>
             <div class="hero-card__text">
                 <div class="hero-card__text-content">
@@ -11,14 +11,12 @@
                             <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
                         </svg>
                         <span>
-                            85% would make this again
+                            {{ randomRecipe?.trend }}% would make this again
                         </span>
                     </div>
-                    <NuxtLink to="#" class="hero-card__text-title">Mighty Super Cheesecake</NuxtLink>
+                    <NuxtLink to="#" class="hero-card__text-title">{{ randomRecipe?.name }}</NuxtLink>
                     <p class="hero-card__text-p">
-                        Look no further for a creamy and ultra smooth classic cheesecake recipe! no one can deny its
-                        simple
-                        decadence.
+                        {{ randomRecipe?.annotation }}
                     </p>
                     <div class="hero-card__text-arrow">
                         <svg width="20" height="20">
@@ -32,40 +30,38 @@
     <section class="content-section ">
         <h2 class="content-section__header">Super Delicious</h2>
         <div class="content-section__cards grid-scroll">
-            <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
+            <Card class="content-section__card" v-for="(item, index) in randomRecipes" :key="index" :recipeInfo="item"
                 withRating />
         </div>
     </section>
     <section class="content-section">
         <h2 class="content-section__header">Sweet Tooth</h2>
         <div class="content-section__cards grid-scroll">
-            <Card class="content-section__card" v-for="(item, index) in fakeData" :key="index" :recipeInfo="item"
-                withRating />
+            <Card class="content-section__card" v-for="(item, index) in recipesByCategory" :key="index"
+                :recipeInfo="item" withRating />
         </div>
     </section>
     <section class="content-section">
         <h2 class="content-section__header">Popular categories</h2>
         <div class="content-section__cards popular-categories">
-            <Card class="content-section__card" v-for="(item, index) in fakeData2" :key="index" :recipeInfo="item"
-                roundImage />
+            <Card class="content-section__card" v-for="(item, index) in randomCategories" :key="index"
+                :recipeInfo="item" roundImage />
         </div>
     </section>
     <section class="content-section newsletter-section">
         <Newsletter />
     </section>
-    <section class="content-section">
+    <!--  <section class="content-section">
         <h2 class="content-section__header">Hand-Picked Collections</h2>
         <div class="content-section__cards hand-picked">
-            <Card class="content-section__card" v-for="(item, index) in [...fakeData, ...fakeData]" :key="index"
+            <Card class="content-section__card" v-for="(item, index) in []" :key="index"
                 :recipeInfo="item" withQuantity />
         </div>
-    </section>
+    </section> -->
     <section class="content-section">
         <h2 class="content-section__header">Latest Recipes</h2>
         <div class="content-section__cards latest-recipes">
-            <Card class="content-section__card"
-                v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData, ...fakeData]" :key="index"
-                :recipeInfo="item" />
+            <Card class="content-section__card" v-for="(item, index) in allRecipes" :key="index" :recipeInfo="item" />
         </div>
         <button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</button>
     </section>
@@ -73,81 +69,18 @@
 
 <script setup lang="ts">
 import Card from "@/components/ui/Card.vue"
+import processLink from "@/composables/processLink";
 import Newsletter from "~/components/functional/Newsletter.vue";
-onMounted(async () => {
-    const recipes = await $fetch('/api/prisma/get-all-recipes')
-    console.log(recipes);
+import type { Category, Recipe } from "~/types/types";
+const requests = await Promise.all([
+    useFetch('/api/prisma/random-recipes'),
+    useFetch('/api/prisma/random-recipes?count=3'),
+    useFetch('/api/prisma/recipes-by-category?category=dessert'),
+    useFetch('/api/prisma/random-categories?count=6'),
+    useFetch('/api/prisma/all-recipes'),
+])
 
-})
-
-const fakeData = [
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 4.6,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 177
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 3.2,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 18
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 66
-    },
-]
-
-const fakeData2 = [
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 4.6,
-        name: 'Pasta',
-        category: 'Dessert',
-        quantity: 177
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 3.2,
-        name: 'Pizza',
-        category: 'Dessert',
-        quantity: 18
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Vegan',
-        category: 'Dessert',
-        quantity: 66
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Desserts',
-        category: 'Dessert',
-        quantity: 66
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Vegan',
-        category: 'Smoothies',
-        quantity: 66
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Vegan',
-        category: 'Breakfast',
-        quantity: 66
-    },
-]
+const [randomRecipe, randomRecipes, recipesByCategory, randomCategories, allRecipes] = (requests).map((res) => res.data.value) as [Recipe, Recipe[], Recipe[], Category[], Recipe[],]
 
 </script>
 
@@ -197,13 +130,14 @@ const fakeData2 = [
         width: 100%
         img
             width: 100%
+            height: 100%
             border-radius: 14px 14px 0 0
     &__text
         position: relative        
         display: grid
         align-items: center
         background-color: var(--color-light-blue)
-        padding: 0 40px
+        padding: 30px 40px
     &__text-content
         display: grid
         row-gap: 12px

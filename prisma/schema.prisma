@@ -51,8 +51,8 @@ model Recipe {
   updated_at  DateTime @updatedAt
   @@map("recipes")
   Comment Comment[] @relation(name: "commentsByRecipe")
+  Collections Collections[] @relation("recipesByCollection")
 }
-
 
 model Category {
   id          String @id @default(uuid()) @db.Uuid
@@ -77,5 +77,13 @@ model Comment {
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime @updatedAt
   @@map("comments")
+}
+
+model Collections {
+  id          String @id @default(uuid()) @db.Uuid
+  name        String
+  image       String
+  recipes     Recipe[] @relation("recipesByCollection")
+  @@map("collections")
 }
 
