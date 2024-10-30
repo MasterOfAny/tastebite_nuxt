@@ -2,7 +2,8 @@
     <button v-if="!props.link"
         :class="{ 'site-btn': true, 'site-btn_orange': props.orangeButton, 'site-btn_disabled': props.disabled }"
         :type="props.type" :disabled="props.disabled" @click="emit('click')">
-        <slot />
+        <slot v-if="!props.loading" />
+        <Loading v-else />
     </button>
     <NuxtLink v-else :to="props.link"
         :class="{ 'site-btn': true, 'site-btn_orange': props.orangeButton, 'site-btn_disabled': props.disabled }"
@@ -12,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+const Loading = defineAsyncComponent(() => import('@/components/ui/Loading.vue'))
 const props = defineProps({
     link: {
         type: String,
@@ -22,6 +24,10 @@ const props = defineProps({
         default: 'button'
     },
     disabled: {
+        type: Boolean,
+        default: false
+    },
+    loading: {
         type: Boolean,
         default: false
     },

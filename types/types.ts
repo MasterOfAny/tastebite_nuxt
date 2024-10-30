@@ -65,3 +65,19 @@ export type Collections = {
     image: string;
     recipes: Recipe[];
 }
+
+export type Form = {
+    url: string,
+    method: 'POST' | 'GET',
+    body?: { [key: string]: any } | FormData
+}
+
+export type FormField = {
+    value: any,
+    error: string,
+    validator: any
+}
+
+export type FormFields = {
+    [key: string]: FormField
+}

@@ -158,6 +158,11 @@ const [randomRecipe, randomRecipes, recipesByCategory, randomCategories, allReci
     &__text-p
         font-size: 18px
         line-height: 1.56
+        display: -webkit-box
+        -webkit-line-clamp: 5
+        -webkit-box-orient: vertical
+        overflow: hidden
+        text-overflow: ellipsis
     &__text-arrow
         position: absolute
         right: 20px
