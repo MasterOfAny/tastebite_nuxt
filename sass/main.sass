@@ -125,6 +125,10 @@ a
     outline: none
     border: none
     background-color: transparent
+.tb-input,
+.tb-textarea
+    &:hover
+        border: 1px solid var(--color-black)
 .file-link
     text-decoration-color: var(--color-orange)
     &:hover
@@ -135,6 +139,10 @@ a
     textarea
         opacity: 0.6
 .field-error
+    input
+        border: 1px solid var(--color-system-danger)
+        border-radius: 4px
+.field-error-text
     margin-top: 4px
     color: var(--color-system-danger)
     background-color: var(--color-system-danger-light)

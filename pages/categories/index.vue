@@ -2,43 +2,15 @@
     <div class="categories-page">
         <h1>Categories</h1>
         <div class="categories-page__cards">
-            <Card v-for="(item, index) in categoriesData" :key="index" :recipeInfo="item" round-image />
+            <Card v-for="(item, index) in categories" :key="index" :recipeInfo="item" round-image path="categories" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import Card from '~/components/ui/Card.vue';
-const categoriesData = [
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Seafood',
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Soup',
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Pancakes',
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Meat',
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Chicken',
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Dessert',
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        name: 'Dessert',
-    }
-]
+
+const categories = (await useFetch('/api/prisma/all-categories')).data.value
 </script>
 
 <style scoped lang="sass">

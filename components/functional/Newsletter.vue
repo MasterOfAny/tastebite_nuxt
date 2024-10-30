@@ -6,13 +6,14 @@
                 Enjoy weekly hand picked recipes and recommendations
             </p>
             <form :class="{ 'form-loading': formSending }" v-on:submit="onSubmit">
-                <div class="newsletter__input-container">
+                <div :class="{ 'newsletter__input-container': true, 'field-error': formFields.mailInput.error }">
                     <svg width="24" height="24">
                         <use xlink:href="/images/iconsList.svg#icon-mail"></use>
                     </svg>
                     <input class="newsletter__input tb-input" type="text" placeholder="Email Address"
                         v-model="formFields.mailInput.value" @input="processFormField(formFields.mailInput)" />
-                    <div v-if="formFields.mailInput.error" class="field-error">{{ formFields.mailInput.error }}</div>
+                    <div v-if="formFields.mailInput.error" class="field-error-text">{{ formFields.mailInput.error }}
+                    </div>
                 </div>
                 <Button class="newsletter__btn" :loading="formSending" orangeButton type="submit">join</Button>
             </form>

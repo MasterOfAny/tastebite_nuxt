@@ -31,21 +31,21 @@
         <h2 class="content-section__header">Super Delicious</h2>
         <div class="content-section__cards grid-scroll">
             <Card class="content-section__card" v-for="(item, index) in randomRecipes" :key="index" :recipeInfo="item"
-                withRating />
+                withRating path="recipes" />
         </div>
     </section>
     <section class="content-section">
         <h2 class="content-section__header">Sweet Tooth</h2>
         <div class="content-section__cards grid-scroll">
             <Card class="content-section__card" v-for="(item, index) in recipesByCategory" :key="index"
-                :recipeInfo="item" withRating />
+                :recipeInfo="item" withRating path="recipes" />
         </div>
     </section>
     <section class="content-section">
         <h2 class="content-section__header">Popular categories</h2>
         <div class="content-section__cards popular-categories">
             <Card class="content-section__card" v-for="(item, index) in randomCategories" :key="index"
-                :recipeInfo="item" roundImage />
+                :recipeInfo="item" roundImage path="categories" />
         </div>
     </section>
     <section class="content-section newsletter-section">
@@ -61,7 +61,8 @@
     <section class="content-section">
         <h2 class="content-section__header">Latest Recipes</h2>
         <div class="content-section__cards latest-recipes">
-            <Card class="content-section__card" v-for="(item, index) in allRecipes" :key="index" :recipeInfo="item" />
+            <Card class="content-section__card" v-for="(item, index) in allRecipes" :key="index" :recipeInfo="item"
+                path="recipes" />
         </div>
         <button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</button>
     </section>
@@ -75,7 +76,7 @@ import type { Category, Recipe } from "~/types/types";
 const requests = await Promise.all([
     useFetch('/api/prisma/random-recipes'),
     useFetch('/api/prisma/random-recipes?count=3'),
-    useFetch('/api/prisma/recipes-by-category?category=dessert'),
+    useFetch('/api/prisma/recipes-by-category/dessert?count=3'),
     useFetch('/api/prisma/random-categories?count=6'),
     useFetch('/api/prisma/all-recipes'),
 ])

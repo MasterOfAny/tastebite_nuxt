@@ -17,8 +17,7 @@
                         @select="(value) => selectedOption = value" :selectedOption="selectedOption" />
                 </div>
                 <div class="category-details__cards">
-                    <Card v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData]" :key="index"
-                        :recipeInfo="item" />
+                    <Card v-for="(item, index) in category" :key="index" :recipeInfo="item" path="recipes" />
                 </div>
             </div>
         </div>
@@ -28,30 +27,9 @@
 <script setup lang="ts">
 import Card from '~/components/ui/Card.vue';
 import Select from '~/components/ui/Select.vue';
-//const route = useRoute()
-const fakeData = [
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 4.6,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 177
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 3.2,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 18
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 66
-    },
-]
+const route = useRoute()
+const category = (await useFetch(`/api/prisma/recipes-by-category/${route.params.detail}`)).data.value
+
 const selectOptions = [
     {
         id: '1',

@@ -1,7 +1,7 @@
 <template>
     <div
         :class="{ 'recipe-card': true, 'recipe-card_round': props.roundImage, 'recipe-card_quantity': props.withQuantity, 'recipe-card_two-columns': props.twoColumns }">
-        <NuxtLink :to="`/recipes/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__image">
+        <NuxtLink :to="`/${props.path}/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__image">
             <img :src="props.recipeInfo?.image" alt="">
         </NuxtLink>
         <Rating v-if="props.withRating && props.recipeInfo?.rating" class="recipe-card__rating"
@@ -41,6 +41,10 @@ const props = defineProps({
     twoColumns: {
         type: Boolean,
         default: false
+    },
+    path: {
+        type: String,
+        required: true
     }
 })
 </script>

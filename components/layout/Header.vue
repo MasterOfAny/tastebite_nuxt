@@ -13,7 +13,7 @@
                         <NuxtLink to="#" class="nav-list__link">Recipes</NuxtLink>
                     </li>
                     <li class="nav-list__item">
-                        <NuxtLink to="#" class="nav-list__link">Categories</NuxtLink>
+                        <NuxtLink to="/categories" class="nav-list__link">Categories</NuxtLink>
                     </li>
                     <li class="nav-list__item">
                         <NuxtLink to="#" class="nav-list__link">Ingredients</NuxtLink>
