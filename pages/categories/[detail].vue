@@ -17,7 +17,7 @@
                         @select="(value) => selectedOption = value" :selectedOption="selectedOption" />
                 </div>
                 <div class="category-details__cards">
-                    <Card v-for="(item, index) in category" :key="index" :recipeInfo="item" path="recipes" />
+                    <Card v-for="(item, index) in category?.recipes" :key="index" :recipeInfo="item" path="recipes" />
                 </div>
             </div>
         </div>
