@@ -6,5 +6,12 @@ export default defineNuxtConfig({
     '@/sass/reset.sass',
     '@/sass/main.sass'
   ],
-  ssr: true
+  ssr: true,
+  //not working
+  /* devServer: {
+    https: {
+      key: './localhost-key.pem',
+      cert: './localhost.pem'
+    }
+  }, */
 })

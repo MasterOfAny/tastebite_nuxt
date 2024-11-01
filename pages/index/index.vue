@@ -37,7 +37,7 @@
     <section class="content-section">
         <h2 class="content-section__header">Sweet Tooth</h2>
         <div class="content-section__cards grid-scroll">
-            <Card class="content-section__card" v-for="(item, index) in recipesByCategory" :key="index"
+            <Card class="content-section__card" v-for="(item, index) in recipesByCategory?.recipes" :key="index"
                 :recipeInfo="item" withRating path="recipes" />
         </div>
     </section>
@@ -76,7 +76,7 @@ import type { Category, Recipe } from "~/types/types";
 const requests = await Promise.all([
     useFetch('/api/prisma/random-recipes'),
     useFetch('/api/prisma/random-recipes?count=3'),
-    useFetch('/api/prisma/recipes-by-category/dessert?count=3'),
+    useFetch('/api/prisma/recipes-by-category/dessert?per_page=3'),
     useFetch('/api/prisma/random-categories?count=6'),
     useFetch('/api/prisma/all-recipes'),
 ])

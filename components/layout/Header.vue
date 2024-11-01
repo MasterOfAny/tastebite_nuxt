@@ -27,11 +27,11 @@
                 <svg class="header-search" width="32" height="32" @click="emit('showSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-search"></use>
                 </svg>
-                <div class="header-profile">
+                <NuxtLink to="/account" class="header-profile">
                     <svg class="header-profile__no-auth" width="24" height="24">
                         <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
                     </svg>
-                </div>
+                </NuxtLink>
                 <svg class="header-hamburger" width="20" height="20" @click="toggleHamburger">
                     <use v-if="!isMenuOpen.status && isMenuOpen.isDurationEnd"
                         xlink:href="/images/iconsList.svg#icon-hamburger"></use>
