@@ -29,6 +29,7 @@ const isFormValid = async (formFields: FormFields) => {
 const resetFields = (formFields: FormFields) => {
     for (let field in formFields) {
         formFields[field].value = null
+        formFields[field].error = ''
     }
 }
 

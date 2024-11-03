@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
         client_secret: GOOGLE_CLIENT_SECRET,
 
-        redirect_uri: "http://localhost:8000/google/callback",
+        redirect_uri: "http://localhost:3000/google-redirect",
 
         grant_type: "authorization_code",
     };
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     const token_info_response = await fetch(
         `${process.env.GOOGLE_TOKEN_INFO_URL}?id_token=${id_token}`
     );
+    setCookie(event, "access_token", access_token_data.access_token, { path: "/" })
     setResponseStatus(event, token_info_response.status)
     return (await token_info_response.json());
-
 })

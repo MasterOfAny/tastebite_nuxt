@@ -73,6 +73,7 @@ import Card from "@/components/ui/Card.vue"
 import processLink from "@/composables/processLink";
 import Newsletter from "~/components/functional/Newsletter.vue";
 import type { Category, Recipe } from "~/types/types";
+
 const requests = await Promise.all([
     useFetch('/api/prisma/random-recipes'),
     useFetch('/api/prisma/random-recipes?count=3'),

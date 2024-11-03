@@ -39,21 +39,25 @@
                 </div>
                 <Button class="auth__btn" :loading="formSending" orangeButton type="submit">{{ btnSign }}</Button>
             </form>
-            <span class="login-page__or">or</span>
-            <div class="login-page__oauth">
-                <svg width="15" height="15">
-                    <use xlink:href="/images/iconsList.svg#icon-google"></use>
-                </svg>
-                <span>Google</span>
+            <template v-if="!isSignUp">
+                <span class="login-page__or">or</span>
+                <button class="login-page__oauth site-btn" @click="googleAuth">
+                    <svg width="15" height="15">
+                        <use xlink:href="/images/iconsList.svg#icon-google"></use>
+                    </svg>
+                    <span>Google</span>
+                </button>
+            </template>
+            <!--  <div @click="googleOut">
+                Log out from Google
+            </div> -->
+            <div class="login-page__signup">
+                <p>
+                    {{ !isSignUp ? "Don't have an account?" : "Already have an account?" }}
+                    <span @click="changeForm">{{ isSignUp ? 'Sign in' : 'Sign up' }}</span>
+                </p>
             </div>
         </div>
-        <svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60" cy="60" r="50" fill="#F7DC6F" />
-            <path d="M 40 40 L 80 40 L 80 80 L 40 80 Z" fill="#8BC34A" />
-            <text x="30" y="55" font-size="24" font-family="Great Vibes" fill="#333333">Taste</text>
-            <text x="30" y="85" font-size="24" font-family="Great Vibes" fill="#333333">Bite</text>
-            <circle cx="90" cy="70" r="10" fill="#FFC080" />
-        </svg>
     </div>
 </template>
 
@@ -63,13 +67,37 @@ import getValidator from "~/composables/validators";
 import { processFormField, isFormValid, sendForm, resetFields } from "~/composables/formEvents";
 import type { Form, FormFields } from "~/types/types";
 //const route = useRoute()
+const userAuth = useCookie<Number>('userAuth')
+const googleAuth = async () => {
+    const url = await $fetch<string>('http://localhost:3000/api/google/connect')
+    window.open(url, '_blank', 'width=800,height=600')
+}
+const changeForm = () => {
+    resetFields(formFields.value)
+    isSignUp.value = !isSignUp.value
+}
+const googleOut = async () => {
+    const accessToken = useCookie<string>('access_token')
+    if (accessToken) {
+        try {
+            await $fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken.value}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+        } catch (e) {
+
+        }
+    }
+}
 const isSignUp = ref(false)
 const btnSign = computed(() => {
     return isSignUp.value ? 'sign up' : 'sign in'
 })
 
 const formFields = ref<FormFields>({
-    ...(isSignUp.value ? { nameInput: { value: '', error: '', validator: getValidator('name') } } : {}),
+    nameInput: { value: '', error: '', validator: getValidator('name') },
     mailInput: { value: '', error: '', validator: getValidator('email') },
     passInput: { value: '', error: '', validator: getValidator('password') }
 })
@@ -80,13 +108,29 @@ const formResult = ref('')
 
 const onSubmit = async (e: Event) => {
     e.preventDefault()
-    const validateForm = await isFormValid(formFields.value)
+    let form: Form
+    const validateFormFields = isSignUp.value ? formFields.value : { ...formFields.value }
+    delete validateFormFields.nameInput
+    const validateForm = await isFormValid(validateFormFields)
     if (!validateForm) return
-    const form: Form = {
-        url: '/api/email/send',
-        method: 'POST',
-        body: {
-            email: formFields.value.mailInput.value
+    if (isSignUp.value) {
+        form = {
+            url: '/api/prisma/user/save',
+            method: 'POST',
+            body: {
+                email: formFields.value.mailInput.value,
+                name: formFields.value.nameInput.value,
+                password: formFields.value.passInput.value
+            }
+        }
+    } else {
+        form = {
+            url: '/api/prisma/user/get',
+            method: 'POST',
+            body: {
+                email: formFields.value.mailInput.value,
+                password: formFields.value.passInput.value
+            }
         }
     }
     formSending.value = true
@@ -95,6 +139,13 @@ const onSubmit = async (e: Event) => {
     openModal.value = true
     resetFields(formFields.value)
 }
+
+watch(() => userAuth.value, (value) => {
+    if (value) {
+        //window.alert('Logged!')
+        navigateTo('/account')
+    }
+})
 
 </script>
 
@@ -131,6 +182,19 @@ const onSubmit = async (e: Event) => {
         margin: 18px auto
         width: fit-content
         border-radius: 4px
+        border: none
+        &:hover
+            background-color: var(--color-gray-other-light)
+        span
+            margin-left: 10px
+    &__signup
+        margin-top: 60px
+        text-align: center
+        span
+            color: var(--color-orange)
+            cursor: pointer
+            &:hover
+                text-decoration: underline
 form
     margin-top: 40px
     display: grid
