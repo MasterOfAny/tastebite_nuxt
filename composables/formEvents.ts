@@ -35,11 +35,11 @@ const resetFields = (formFields: FormFields) => {
 
 const sendForm = async (form: Form) => {
     try {
-        const res: { message: string } = await $fetch(form.url, {
+        const res = await $fetch(form.url, {
             method: form.method,
             ...form.body && { body: form.body }
         })
-        return res?.message
+        return res
     } catch (error: any) {
         return error?.message
     }

@@ -3,24 +3,24 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const userAuth = useCookie<Number>('userAuth')
 definePageMeta({
     layout: false,
 })
 onBeforeMount(async () => {
     try {
         const res = await $fetch(`http://localhost:3000/api/google/callback?code=${route.query.code}`)
-        await $fetch('/api/prisma/user/save', {
-            method: 'POST',
-            body: {
-                google: res
-            }
-        })
-        userAuth.value = 1
+        /*    await $fetch('/api/prisma/user', {
+               method: 'POST',
+               body: {
+                   google: res
+               }
+           }) */
+        console.log(res);
+
     } catch (error) {
 
     }
-    window.close()
+    //window.close()
 })
 </script>
 

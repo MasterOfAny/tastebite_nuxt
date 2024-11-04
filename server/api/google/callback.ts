@@ -1,9 +1,14 @@
+import { PrismaClient } from '@prisma/client';
+import { setTokens } from '~/server/utils/auth';
+
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 const GOOGLE_ACCESS_TOKEN_URL = process.env.GOOGLE_ACCESS_TOKEN_URL;
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
+
+const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
     const { code } = getQuery(event)
@@ -30,7 +35,36 @@ export default defineEventHandler(async (event) => {
     const token_info_response = await fetch(
         `${process.env.GOOGLE_TOKEN_INFO_URL}?id_token=${id_token}`
     );
-    setCookie(event, "access_token", access_token_data.access_token, { path: "/" })
-    setResponseStatus(event, token_info_response.status)
-    return (await token_info_response.json());
+    const googleUser = await token_info_response.json()
+    let user = await prisma.user.findUnique({
+        where: { email: googleUser.email }
+    });
+
+    if (!user) {
+        user = await prisma.user.create({
+            data: {
+                name: googleUser.name,
+                user_name: googleUser.name,
+                email: googleUser.email,
+                newsletter: false,
+                hash: '',
+                photo: googleUser.picture,
+                accounts: ['google']
+            }
+        });
+    }
+
+    const { access_token, refresh_token } = setTokens(user.id);
+
+    // Сохранение refresh-токена в базе данных
+    await prisma.refreshToken.create({
+        data: {
+            token: refresh_token,
+            userId: user.id
+        }
+    });
+
+    setCookie(event, 'access_token', access_token, { httpOnly: true });
+    setCookie(event, 'refresh_token', refresh_token, { httpOnly: true });
+    return
 })

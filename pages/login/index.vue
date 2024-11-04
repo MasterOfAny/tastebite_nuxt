@@ -58,16 +58,22 @@
                 </p>
             </div>
         </div>
+        <Modal v-if="openModal" @close="openModal = false">
+            <p>{{ formResult }}</p>
+        </Modal>
     </div>
 </template>
 
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
 import getValidator from "~/composables/validators";
-import { processFormField, isFormValid, sendForm, resetFields } from "~/composables/formEvents";
-import type { Form, FormFields } from "~/types/types";
+import { processFormField, isFormValid, resetFields } from "~/composables/formEvents";
+import { useUser } from '~/stores/user';
+import type { FormFields } from "~/types/types";
+const Modal = defineAsyncComponent(() => import('~/components/ui/Modal.vue'))
+
 //const route = useRoute()
-const userAuth = useCookie<Number>('userAuth')
+const userStore = useUser()
 const googleAuth = async () => {
     const url = await $fetch<string>('http://localhost:3000/api/google/connect')
     window.open(url, '_blank', 'width=800,height=600')
@@ -75,21 +81,6 @@ const googleAuth = async () => {
 const changeForm = () => {
     resetFields(formFields.value)
     isSignUp.value = !isSignUp.value
-}
-const googleOut = async () => {
-    const accessToken = useCookie<string>('access_token')
-    if (accessToken) {
-        try {
-            await $fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken.value}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                }
-            })
-        } catch (e) {
-
-        }
-    }
 }
 const isSignUp = ref(false)
 const btnSign = computed(() => {
@@ -108,44 +99,22 @@ const formResult = ref('')
 
 const onSubmit = async (e: Event) => {
     e.preventDefault()
-    let form: Form
     const validateFormFields = isSignUp.value ? formFields.value : { ...formFields.value }
     delete validateFormFields.nameInput
     const validateForm = await isFormValid(validateFormFields)
     if (!validateForm) return
     if (isSignUp.value) {
-        form = {
-            url: '/api/prisma/user/save',
-            method: 'POST',
-            body: {
-                email: formFields.value.mailInput.value,
-                name: formFields.value.nameInput.value,
-                password: formFields.value.passInput.value
-            }
-        }
+        await userStore.register(formFields.value.nameInput.value, formFields.value.mailInput.value, formFields.value.passInput.value)
     } else {
-        form = {
-            url: '/api/prisma/user/get',
-            method: 'POST',
-            body: {
-                email: formFields.value.mailInput.value,
-                password: formFields.value.passInput.value
-            }
-        }
+        await userStore.login(formFields.value.mailInput.value, formFields.value.passInput.value)
     }
     formSending.value = true
-    formResult.value = await sendForm(form)
+    console.log(formResult.value);
+
     formSending.value = false
-    openModal.value = true
+    //openModal.value = true
     resetFields(formFields.value)
 }
-
-watch(() => userAuth.value, (value) => {
-    if (value) {
-        //window.alert('Logged!')
-        navigateTo('/account')
-    }
-})
 
 </script>
 

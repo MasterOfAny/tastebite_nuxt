@@ -27,11 +27,16 @@
                 <svg class="header-search" width="32" height="32" @click="emit('showSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-search"></use>
                 </svg>
-                <NuxtLink to="/account" class="header-profile">
-                    <svg class="header-profile__no-auth" width="24" height="24">
-                        <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
-                    </svg>
-                </NuxtLink>
+                <div class="header-login">
+                    <NuxtLink to="/account" class="header-profile">
+                        <svg class="header-profile__no-auth" width="24" height="24">
+                            <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
+                        </svg>
+                    </NuxtLink>
+                    <div v-if="!userStore.user?.isAuth" class="header-login__popup" @click="router.push('/login')">
+                        Sign in or Sign up
+                    </div>
+                </div>
                 <svg class="header-hamburger" width="20" height="20" @click="toggleHamburger">
                     <use v-if="!isMenuOpen.status && isMenuOpen.isDurationEnd"
                         xlink:href="/images/iconsList.svg#icon-hamburger"></use>
@@ -46,6 +51,10 @@
 const emit = defineEmits({
     showSearchPanel() { }
 })
+import { useUser } from '~/stores/user';
+
+const userStore = useUser()
+const router = useRouter()
 const isMenuOpen = ref({
     status: false,
     isDurationEnd: true
@@ -94,6 +103,23 @@ const toggleHamburger = () => {
     height: 32px
     border-radius: 50%
     background-color: var(--color-gray-other-light)
+.header-login
+    position: relative
+    &__popup
+        display: none
+        position: absolute
+        right: 0
+        width: 200px
+        padding: 10px 20px
+        background-color: var(--color-white)
+        box-shadow: 0 9px 17px 0 rgba(0, 0, 0, 0.07)
+        border-radius: 4px
+        text-align: center
+        cursor: pointer
+        &:hover
+            color: var(--color-orange)
+    &:hover > .header-login__popup
+        display: block
 @media(min-width: 981px)
     .header-hamburger
         display: none
