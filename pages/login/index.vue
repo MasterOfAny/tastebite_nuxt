@@ -58,6 +58,7 @@
                 </p>
             </div>
         </div>
+        {{ isAuth }}
         <Modal v-if="openModal" @close="openModal = false">
             <p>{{ formResult }}</p>
         </Modal>
@@ -74,6 +75,7 @@ const Modal = defineAsyncComponent(() => import('~/components/ui/Modal.vue'))
 
 //const route = useRoute()
 const userStore = useUser()
+const isAuth = useCookie('isAuth')
 const googleAuth = async () => {
     const url = await $fetch<string>('http://localhost:3000/api/google/connect')
     window.open(url, '_blank', 'width=800,height=600')
@@ -110,12 +112,17 @@ const onSubmit = async (e: Event) => {
     }
     formSending.value = true
     console.log(formResult.value);
-
     formSending.value = false
     //openModal.value = true
     resetFields(formFields.value)
 }
 
+// Start of Selection
+watch(isAuth, async (newVal) => {
+    if (newVal) {
+        await navigateTo('/account')
+    }
+})
 </script>
 
 <style scoped lang="sass">

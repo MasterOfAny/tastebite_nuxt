@@ -4,58 +4,59 @@
             <h1>Profile</h1>
             <!-- <Button class="account__header-button" orange-button>save</Button> -->
         </div>
-        <section class="account__body">
-            <div class="account__photo-block">
-                <div class="account__photo">
-                    <img width="128" height="128"
-                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
-                        alt="">
+        <ClientOnly>
+            <section v-if="userStore.userData?.email" class="account__body">
+                <div class="account__photo-block">
+                    <div class="account__photo">
+                        <img width="128" height="128"
+                            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+                            alt="">
+                    </div>
+                    <Button class="account__header-btn" orange-button>Change</Button>
+                    <Button class="account__header-btn site-btn_bw-btn">Delete</Button>
                 </div>
-                <Button class="account__header-btn" orange-button>Change</Button>
-                <Button class="account__header-btn site-btn_bw-btn">Delete</Button>
-            </div>
-            <form class="account__form">
-                <div class="account__form-inputs">
-                    <div class="account__form-input">
-                        <label for="account-name">full name</label>
-                        <div class="account__form-input-wrapper">
-                            <input id="account-name" type="text" />
-                            <svg width="24" height="24">
-                                <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
-                            </svg>
+                <form class="account__form">
+                    <div class="account__form-inputs">
+                        <div class="account__form-input">
+                            <label for="account-name">full name</label>
+                            <div class="account__form-input-wrapper">
+                                <input id="account-name" type="text" />
+                                <svg width="24" height="24">
+                                    <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="account__form-input">
+                            <label for="account-username">username</label>
+                            <div class="account__form-input-wrapper">
+                                <input id="account-username" type="text" />
+                                <svg width="24" height="24">
+                                    <use xlink:href="/images/iconsList.svg#icon-at"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="account__form-input">
+                            <label for="account-email">email</label>
+                            <div class="account__form-input-wrapper">
+                                <input id="account-email" type="email" />
+                                <svg width="24" height="24">
+                                    <use xlink:href="/images/iconsList.svg#icon-mail"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="account__form-input">
+                            <label for="account-password">password</label>
+                            <div class="account__form-input-wrapper">
+                                <input id="account-password" type="password" />
+                                <svg width="24" height="24">
+                                    <use xlink:href="/images/iconsList.svg#icon-lock"></use>
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                    <div class="account__form-input">
-                        <label for="account-username">username</label>
-                        <div class="account__form-input-wrapper">
-                            <input id="account-username" type="text" />
-                            <svg width="24" height="24">
-                                <use xlink:href="/images/iconsList.svg#icon-at"></use>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="account__form-input">
-                        <label for="account-email">email</label>
-                        <div class="account__form-input-wrapper">
-                            <input id="account-email" type="email" />
-                            <svg width="24" height="24">
-                                <use xlink:href="/images/iconsList.svg#icon-mail"></use>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="account__form-input">
-                        <label for="account-password">password</label>
-                        <div class="account__form-input-wrapper">
-                            <input id="account-password" type="password" />
-                            <svg width="24" height="24">
-                                <use xlink:href="/images/iconsList.svg#icon-lock"></use>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <Button class="account__form-btn" orange-button type="submit">save</Button>
-            </form>
-            <div class="account__other-accounts">
+                    <Button class="account__form-btn" orange-button type="submit">save</Button>
+                </form>
+                <!--  <div class="account__other-accounts">
                 <h2 class="account-block-title">Connected Accounts</h2>
                 <div class="account__other-accounts-list">
                     <div class="account__other-accounts-item">
@@ -66,32 +67,40 @@
                         <Button class="site-btn_bw-btn">Disconnect</Button>
                     </div>
                 </div>
-            </div>
-            <div class="account__newsletter">
-                <h2 class="account-block-title">Newsletter</h2>
-                <div class="account__newsletter-text">
-                    <p>You are currently subscribed to our newsletter</p>
-                    <Button class="site-btn_bw-btn">subscribe</Button>
+            </div> -->
+                <div class="account__newsletter">
+                    <h2 class="account-block-title">Newsletter</h2>
+                    <div class="account__newsletter-text">
+                        <p>You are currently subscribed to our newsletter</p>
+                        <Button class="site-btn_bw-btn">subscribe</Button>
+                    </div>
                 </div>
-            </div>
-            <div class="account__actions">
-                <Button class="site-btn_bw-btn" type="button">
-                    <svg width="24" height="24">
-                        <use xlink:href="/images/iconsList.svg#icon-logout"></use>
-                    </svg>
-                    <span>Sign out</span>
-                </Button>
-                <button type="button">
-                    Delete Account
-                </button>
-            </div>
-        </section>
+                <div class="account__actions">
+                    <Button class="site-btn_bw-btn" type="button" @click="userStore.logout()">
+                        <svg width="24" height="24">
+                            <use xlink:href="/images/iconsList.svg#icon-logout"></use>
+                        </svg>
+                        <span>Sign out</span>
+                    </Button>
+                    <button type="button">
+                        Delete Account
+                    </button>
+                </div>
+            </section>
+        </ClientOnly>
     </div>
 </template>
 
 <script setup lang="ts">
 import Button from '@/components/ui/Button.vue';
+import { useUser } from '~/stores/user';
 
+const userStore = useUser()
+onMounted(async () => {
+    console.log('MOUNTED');
+
+    await userStore.fetchUserData(true)
+})
 </script>
 
 <style scoped lang="sass">

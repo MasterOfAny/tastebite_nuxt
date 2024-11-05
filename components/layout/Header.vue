@@ -27,13 +27,15 @@
                 <svg class="header-search" width="32" height="32" @click="emit('showSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-search"></use>
                 </svg>
+                {{ }}
                 <div class="header-login">
                     <NuxtLink to="/account" class="header-profile">
-                        <svg class="header-profile__no-auth" width="24" height="24">
+                        <svg v-if="!userStore.userData?.photo" class="header-profile__no-auth" width="24" height="24">
                             <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
                         </svg>
+                        <img v-else :src="userStore.userData?.photo || ''" alt="user" width="24" height="24">
                     </NuxtLink>
-                    <div v-if="!userStore.user?.isAuth" class="header-login__popup" @click="router.push('/login')">
+                    <div v-if="!isAuth" class="header-login__popup" @click="router.push('/login')">
                         Sign in or Sign up
                     </div>
                 </div>
@@ -54,6 +56,7 @@ const emit = defineEmits({
 import { useUser } from '~/stores/user';
 
 const userStore = useUser()
+const isAuth = useCookie('isAuth')
 const router = useRouter()
 const isMenuOpen = ref({
     status: false,

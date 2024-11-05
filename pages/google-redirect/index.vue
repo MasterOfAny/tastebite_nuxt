@@ -8,19 +8,13 @@ definePageMeta({
 })
 onBeforeMount(async () => {
     try {
-        const res = await $fetch(`http://localhost:3000/api/google/callback?code=${route.query.code}`)
-        /*    await $fetch('/api/prisma/user', {
-               method: 'POST',
-               body: {
-                   google: res
-               }
-           }) */
-        console.log(res);
-
+        await $fetch(`http://localhost:3000/api/google/callback?code=${route.query.code}`)
+        const isAuth = useCookie<boolean>('isAuth')
+        isAuth.value = true
     } catch (error) {
 
     }
-    //window.close()
+    window.close()
 })
 </script>
 

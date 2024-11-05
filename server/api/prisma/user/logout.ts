@@ -13,6 +13,6 @@ export default defineEventHandler(async (event) => {
 
     deleteCookie(event, 'access_token');
     deleteCookie(event, 'refresh_token');
-
+    deleteCookie(event, 'google_token');
     return { message: 'Logged out successfully' };
 });

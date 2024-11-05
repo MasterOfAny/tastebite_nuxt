@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
     const token_info_response = await fetch(
         `${process.env.GOOGLE_TOKEN_INFO_URL}?id_token=${id_token}`
     );
+    setCookie(event, "google_token", access_token_data.access_token)
     const googleUser = await token_info_response.json()
     let user = await prisma.user.findUnique({
         where: { email: googleUser.email }
@@ -56,15 +57,13 @@ export default defineEventHandler(async (event) => {
 
     const { access_token, refresh_token } = setTokens(user.id);
 
-    // Сохранение refresh-токена в базе данных
     await prisma.refreshToken.create({
         data: {
             token: refresh_token,
             userId: user.id
         }
     });
-
-    setCookie(event, 'access_token', access_token, { httpOnly: true });
+    setCookie(event, "access_token", access_token, { httpOnly: true })
     setCookie(event, 'refresh_token', refresh_token, { httpOnly: true });
     return
 })

@@ -3,24 +3,12 @@ import { sendForm } from "~/composables/formEvents";
 import type { Form, User } from "~/types/types"
 
 export const useUser = defineStore('user', () => {
-    const isAuth = ref(false)
     const userData = ref<User | null>(null)
-    const jwtCookie = useCookie(useRuntimeConfig().public.cookieName as string, {
-        sameSite: 'strict',
-        httpOnly: true,
-        secure: true,
-    })
-
-    const jwtRefreshCookie = useCookie(useRuntimeConfig().public.cookieName + '-refresh', {
-        sameSite: 'strict',
-        httpOnly: true,
-        secure: true,
-    })
-
+    const isAuth = useCookie<boolean>('isAuth')
 
     const login = async (email: string, password: string) => {
         const form: Form = {
-            url: '/api/prisma/user/login',
+            url: '/api/prisma/user',
             method: 'POST',
             body: {
                 email: email,
@@ -37,7 +25,7 @@ export const useUser = defineStore('user', () => {
 
     const register = async (name: string, email: string, password: string) => {
         const form: Form = {
-            url: '/api/prisma/user/save',
+            url: '/api/prisma/user',
             method: 'POST',
             body: {
                 email: email,
@@ -45,12 +33,19 @@ export const useUser = defineStore('user', () => {
                 password: password
             }
         }
-        const res = await sendForm(form)
+        try {
+            await sendForm(form)
+            return fetchUserData()
+        } catch (e) {
+
+        }
     }
 
-    const logout = async (google: boolean) => {
-        if (google) {
-            const accessToken = useCookie<string>('access_token')
+    const logout = async () => {
+        if (userData.value?.accounts.includes('google')) {
+            const accessToken = useCookie<string>('google_token')
+            console.log('ACCESS TOKEN', accessToken.value);
+
             if (accessToken) {
                 try {
                     await $fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken.value}`, {
@@ -63,30 +58,47 @@ export const useUser = defineStore('user', () => {
 
                 }
             }
+        }
+        try {
+            await $fetch('/api/prisma/user/logout')
+        } catch (e) {
+
+        }
+        isAuth.value = false
+        userData.value = null
+        if (location.pathname.includes('account')) {
+            return navigateTo('/login')
+        }
+    }
+    const fetchUserData = async (full = false) => {
+        if (!full) {
+            try {
+                const res = (await useFetch(`/api/prisma/user/get`)).data.value
+                if (!res?.message) {
+                    userData.value = res as unknown as User
+                    isAuth.value = true
+                }
+            } catch (error) {
+                console.error('Error fetching user data')
+            }
         } else {
-            if (process.server) {
-                jwtCookie.value = null;
-                jwtRefreshCookie.value = null;
-                userData.value = null;
-            } else {
-                //const response = await useServerSideLogout();
-                userData.value = null;
-                window.location.reload()
+            try {
+                const res = await $fetch(`/api/prisma/user/get?full=true`)
+                if (!res?.message) {
+                    userData.value = res as unknown as User
+                    isAuth.value = true
+                }
+            } catch (error) {
+                console.error('Error fetching user data')
             }
         }
     }
 
-    const fetchUserData = () => {
-
-    }
-
     return {
-        user: {
-            isAuth: isAuth.value,
-            userData: userData.value
-        },
+        userData,
         login,
         register,
-        logout
+        logout,
+        fetchUserData
     }
 })
