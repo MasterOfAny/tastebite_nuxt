@@ -2,7 +2,7 @@ export type User = {
     id: string;
     photo?: string | null;
     name: string;
-    userName: string;
+    user_name: string;
     email: string;
     hash: string;
     accounts: string[];
@@ -75,7 +75,7 @@ export type Form = {
 export type FormField = {
     value: any,
     error: string,
-    validator: any
+    validator?: any
 }
 
 export type FormFields = {

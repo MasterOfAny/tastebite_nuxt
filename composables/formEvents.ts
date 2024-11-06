@@ -1,6 +1,7 @@
 import type { Form, FormField, FormFields } from "~/types/types"
 
 const processFormField = async (field: FormField) => {
+    if (!field?.validator) return
     try {
         await field.validator.validate(field.value)
         field.error = ''
@@ -12,11 +13,15 @@ const processFormField = async (field: FormField) => {
 const isFormValid = async (formFields: FormFields) => {
     let errorsCount = 0
     for (let field in formFields) {
-        try {
-            await formFields[field].validator.validate(formFields[field].value)
-        } catch (error: any) {
-            formFields[field].error = error.message
-            errorsCount++
+        if (formFields[field]?.validator) {
+            try {
+                await formFields[field].validator.validate(formFields[field].value)
+            } catch (error: any) {
+                console.log(field);
+
+                formFields[field].error = error.message
+                errorsCount++
+            }
         }
     }
     if (errorsCount === 0) {

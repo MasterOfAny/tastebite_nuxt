@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
         photo: true,
         name: true,
         user_name: true,
+        accounts: true,
     }
 
     if (full) {
@@ -21,6 +22,8 @@ export default defineEventHandler(async (event) => {
             photo: true,
             name: true,
             user_name: true,
+            accounts: true,
+            newsletter: true,
             created_at: true,
             updated_at: true,
             email: true,

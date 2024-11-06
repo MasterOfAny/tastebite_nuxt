@@ -5,6 +5,7 @@ import type { Form, User } from "~/types/types"
 export const useUser = defineStore('user', () => {
     const userData = ref<User | null>(null)
     const isAuth = useCookie<boolean>('isAuth')
+    const error = ref('')
 
     const login = async (email: string, password: string) => {
         const form: Form = {
@@ -44,8 +45,6 @@ export const useUser = defineStore('user', () => {
     const logout = async () => {
         if (userData.value?.accounts.includes('google')) {
             const accessToken = useCookie<string>('google_token')
-            console.log('ACCESS TOKEN', accessToken.value);
-
             if (accessToken) {
                 try {
                     await $fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken.value}`, {
@@ -77,8 +76,11 @@ export const useUser = defineStore('user', () => {
                 if (!res?.message) {
                     userData.value = res as unknown as User
                     isAuth.value = true
+                } else {
+                    error.value = res.message
                 }
             } catch (error) {
+                error.value = error.data.message
                 console.error('Error fetching user data')
             }
         } else {
@@ -87,10 +89,46 @@ export const useUser = defineStore('user', () => {
                 if (!res?.message) {
                     userData.value = res as unknown as User
                     isAuth.value = true
+                } else {
+                    error.value = res.message
                 }
             } catch (error) {
+                error.value = error.data.message
                 console.error('Error fetching user data')
             }
+        }
+    }
+    const updateUser = async (data: { photo?: File; name?: string; user_name?: string; email?: string; password?: string; newsletter?: boolean }) => {
+        const formData = new FormData()
+        if (data.photo) {
+            formData.append('photo', data.photo)
+        }
+        if (data.name) {
+            formData.append('name', data.name)
+        }
+        if (data.user_name) {
+            formData.append('user_name', data.user_name)
+        }
+        if (data.email) {
+            formData.append('email', data.email)
+        }
+        if (data.password) {
+            formData.append('password', data.password)
+        }
+        if (data.newsletter) {
+            formData.append('newsletter', data.newsletter.toString())
+        }
+
+        try {
+            const res = await $fetch(`/api/prisma/user/update`, { method: 'POST', body: formData })
+            if (!res?.message) {
+                userData.value = res as unknown as User
+            } else {
+                error.value = res.message
+            }
+        } catch (e) {
+            error.value = e.data.message
+            console.error('Error updating user data')
         }
     }
 
@@ -99,6 +137,8 @@ export const useUser = defineStore('user', () => {
         login,
         register,
         logout,
-        fetchUserData
+        fetchUserData,
+        updateUser,
+        error
     }
 })

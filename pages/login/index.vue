@@ -2,7 +2,7 @@
     <div class="login-page">
         <div class="login-page__body">
             <h1>{{ btnSign }}</h1>
-            <form :class="{ 'form-loading': formSending }" v-on:submit="onSubmit">
+            <form :class="{ 'form-loading': formSending }" @submit="onSubmit">
                 <div v-if="isSignUp"
                     :class="{ 'auth__input-container': true, 'field-error': formFields.nameInput.error }">
                     <div class="auth__input-flex">
@@ -60,7 +60,7 @@
         </div>
         {{ isAuth }}
         <Modal v-if="openModal" @close="openModal = false">
-            <p>{{ formResult }}</p>
+            <p>Wrong email or password</p>
         </Modal>
     </div>
 </template>
@@ -97,7 +97,6 @@ const formFields = ref<FormFields>({
 
 const formSending = ref(false)
 const openModal = ref(false)
-const formResult = ref('')
 
 const onSubmit = async (e: Event) => {
     e.preventDefault()
@@ -105,19 +104,17 @@ const onSubmit = async (e: Event) => {
     delete validateFormFields.nameInput
     const validateForm = await isFormValid(validateFormFields)
     if (!validateForm) return
+    formSending.value = true
     if (isSignUp.value) {
         await userStore.register(formFields.value.nameInput.value, formFields.value.mailInput.value, formFields.value.passInput.value)
     } else {
         await userStore.login(formFields.value.mailInput.value, formFields.value.passInput.value)
     }
-    formSending.value = true
-    console.log(formResult.value);
     formSending.value = false
-    //openModal.value = true
+    openModal.value = true
     resetFields(formFields.value)
 }
 
-// Start of Selection
 watch(isAuth, async (newVal) => {
     if (newVal) {
         await navigateTo('/account')
