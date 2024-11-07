@@ -8,52 +8,51 @@
                             <use xlink:href="/images/iconsList.svg#icon-trending-up"></use>
                         </svg>
                         <span>
-                            {{ data.recipeInfo?.trend }}% would make this again
+                            {{ recipe?.trend }}% would make this again
                         </span>
                     </div>
                     <div class="page-top__actions">
                         <svg width="32" height="32">
                             <use xlink:href="/images/iconsList.svg#icon-print"></use>
                         </svg>
-                        <svg width="32" height="32">
+                        <svg width="32" height="32" @click="handleFavorite">
                             <use xlink:href="/images/iconsList.svg#icon-bookmark"></use>
                         </svg>
                     </div>
                 </div>
-                <h1>{{ data.recipeInfo?.name }}</h1>
+                <h1>{{ recipe?.name }}</h1>
                 <div class="page-top__info">
                     <div class="page-top__author page-top__info_flex">
                         <div class="author-avatar">
-                            <img width="32" height="32" :src="data.recipeInfo?.author?.image" alt="">
+                            <img width="32" height="32" :src="recipe?.author?.image" alt="">
                         </div>
-                        <span>{{ data.recipeInfo?.author?.name }}</span>
+                        <span>{{ recipe?.author?.name }}</span>
                     </div>
                     <div class="page-top__date page-top__info_flex">
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-calendar"></use>
                         </svg>
-                        <time datetime="">{{ data.recipeInfo?.date }}</time>
+                        <time datetime="">{{ recipe?.date }}</time>
                     </div>
                     <a href="#comments" class="page-top__comments page-top__info_flex">
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-comment"></use>
                         </svg>
-                        <span>{{ data.comments?.total }}</span>
+                        <span>{{ recipe?.comments?.total }}</span>
                     </a>
                     <div class="page-top__rating">
-                        <Rating :rating="data.recipeInfo?.rating" />
+                        <Rating :rating="recipe?.rating" />
                     </div>
                 </div>
             </div>
             <div class="page-recipe">
                 <div class="page-recipe__annotation">
                     <p>
-                        {{ data.recipeInfo?.annotation }}
+                        {{ recipe?.annotation }}
                     </p>
                 </div>
                 <div class="page-recipe__media">
-                    <img v-if="!data.recipeInfo?.video && data.recipeInfo?.image" width="600" height="380"
-                        :src="data.recipeInfo.image" alt="">
+                    <img v-if="!recipe?.video && recipe?.image" width="600" height="380" :src="recipe.image" alt="">
                     <!--  <iframe v-else width="560" height="315"
                     src="https://www.youtube.com/embed/fZ13nRpZIAU?si=mxX5I4Fyg01yHunn" title="YouTube video player"
                     frameborder="0"
@@ -65,21 +64,21 @@
                         <div class="recipe-time">
                             <div class="recipe-time__item">
                                 <span>prep time</span>
-                                <span>{{ data.stats?.prepTime }} min</span>
+                                <span>{{ recipe?.stats?.prepTime }} min</span>
                             </div>
                             <div class="recipe-time__item">
                                 <span>total time</span>
-                                <span>{{ data.stats?.totalTime }} min</span>
+                                <span>{{ recipe?.stats?.totalTime }} min</span>
                             </div>
                             <div class="recipe-time__item">
                                 <span>servings</span>
-                                <span>{{ data.stats?.servings }} min</span>
+                                <span>{{ recipe?.stats?.servings }} min</span>
                             </div>
                         </div>
                         <div class="recipe-ingridients">
                             <h2 class="recipe-page__minor-header">Ingridients</h2>
                             <div class="recipe-ingridients__list">
-                                <div v-for="(item, index) in data.ingridients" class="recipe-ingridients__item">
+                                <div v-for="(item, index) in recipe?.ingridients" class="recipe-ingridients__item">
                                     <Checkbox :name="'ing-' + index" self-checked>
                                         {{ item }}
                                     </Checkbox>
@@ -89,7 +88,7 @@
                         <div class="recipe-instructions">
                             <h2 class="recipe-page__minor-header">Instructions</h2>
                             <ol class="recipe-instructions__list">
-                                <li v-for="(item, index) in data.instructions" :key="index"
+                                <li v-for="(item, index) in recipe?.directions" :key="index"
                                     class="recipe-instructions__item">
                                     {{ item }}
                                 </li>
@@ -101,7 +100,7 @@
                             <div class="recipe-nutrition__content">
                                 <h2 class="recipe-page__minor-header">Nutrition Facts</h2>
                                 <div class="recipe-nutrition__facts">
-                                    <div v-for="fact in data.nutritionFacts" :key="fact.name"
+                                    <div v-for="fact in recipe?.nutritionFacts" :key="fact.name"
                                         class="recipe-nutrition__fact">
                                         <span>
                                             {{ fact.name }}
@@ -117,7 +116,7 @@
                             <h2 class="recipe-page__minor-header">Fresh Recipes</h2>
                             <div class="fresh-recipes__list">
                                 <Card v-for="item in fakeData" :key="item?.name" class="fresh-recipes__item"
-                                    :recipe-info="item" two-columns with-rating />
+                                    :recipe-info="item" two-columns with-rating path="recipe" />
                             </div>
                         </div>
                         <Newsletter />
@@ -128,15 +127,17 @@
         <section id="comments" class="comments-block">
             <div class="comments-block__header">
                 <h2>Comments</h2>
-                <span v-if="data.comments?.total">({{ data.comments.total }})</span>
+                <span v-if="comments?.total">({{ comments?.total }})</span>
             </div>
-            <CommentForm />
-            <Select :options="selectOptions" placeholder="Sort by" @select="(value) => selectedOption = value"
-                :selected-option="selectedOption" />
-            <div class="comments-block__list">
-                <Comment v-for="(item, index) in data.comments.items" :key="index" :comment="item"
-                    class="comments-block__list-item" />
-            </div>
+            <CommentForm :recipe-id="recipe?.id" />
+            <template v-if="comments?.items">
+                <Select :options="selectOptions" placeholder="Sort by" @select="(value) => selectedOption = value"
+                    :selected-option="selectedOption" />
+                <div class="comments-block__list">
+                    <Comment v-for="(item, index) in comments?.items" :key="index" :comment="item"
+                        class="comments-block__list-item" />
+                </div>
+            </template>
         </section>
     </div>
 </template>
@@ -149,158 +150,27 @@ import Card from '~/components/ui/Card.vue';
 import CommentForm from '~/components/functional/CommentForm.vue';
 const Select = defineAsyncComponent(() => import('~/components/ui/Select.vue'))
 const Comment = defineAsyncComponent(() => import('~/components/ui/Comment.vue'))
+
+const route = useRoute()
 const selectOptions = [
-    { id: '1', value: 'Most Recent' },
-    { id: '2', value: 'Most Helpful' },
-    { id: '3', value: 'Oldest' },
-    { id: '4', value: 'Ratings' },
+    { id: 'recent', value: 'Most Recent' },
+    { id: 'helpful', value: 'Most Helpful' },
+    { id: 'oldest', value: 'Oldest' },
+    { id: 'ratings', value: 'Ratings' },
 ]
 const selectedOption = ref(selectOptions[0])
-const data = {
-    stats: {
-        prepTime: 30,
-        totalTime: 60,
-        servings: 4
-    },
-    recipeInfo: {
-        name: 'Mighty Super Cheesecake',
-        annotation: 'One thing I learned living in the Canarsie section of Brooklyn, NY was how to cook a good Italian meal. Here is a recipe I created after having this dish in a restaurant. Enjoy!',
-        image: '/images/recipe-img.jpg',
-        video: 'https://www.youtube.com/watch?v=4Q2r5q4u4q4',
-        trend: 84,
-        author: {
-            name: 'Tricia Albert',
-            image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-        },
-        date: 'Jan 15, 2022',
-        rating: 4.5
-    },
-    ingridients: [
-        '400g graham crackers',
-        '300g digestive biscuits',
-        '200g icing sugar',
-        '100g butter',
-        '50g grated chocolate',
-        '1 tsp vanilla extract',
-        '1 tsp salt',
-        '1 tsp sugar',
-        '2 eggs',
-    ],
-    nutritionFacts: [
-        {
-            name: 'Calories',
-            value: '300 g'
-        },
-        {
-            name: 'Carbohydrates',
-            value: '300 mg'
-        },
-        {
-            name: 'Fat',
-            value: '300 mg'
-        },
-        {
-            name: 'Protein',
-            value: '300 g'
-        },
-        {
-            name: 'Fiber',
-            value: '300 mg'
-        },
-        {
-            name: 'Sugar',
-            value: '300 mg'
-        },
-        {
-            name: 'Sodium',
-            value: '300 mg'
-        }
-    ],
-    instructions: [
-        'To prepare crust add graham crackers to a food processor and process until you reach fine crumbs. Add melted butter and pulse 3-4 times to coat crumbs with butter.',
-        'Pour mixture into a 20cm (8”) tart tin. Use the back of a spoon to firmly press the mixture out across the bottom and sides of the tart tin. Chill for 30 min.',
-        'Begin by adding the marshmallows and melted butter into a microwave safe bowl. Microwave for 30 seconds and mix to combine. Set aside.',
-        'Next, add the gelatine and water to a small mixing bowl and mix to combine. Microwave for 30 seconds.',
-        'To prepare crust add graham crackers to a food processor and process until you reach fine crumbs. Add melted butter and pulse 3-4 times to coat crumbs with butter.',
-        'Pour mixture into a 20cm (8”) tart tin. Use the back of a spoon to firmly press the mixture out across the bottom and sides of the tart tin. Chill for 30 min.',
-        'Begin by adding the marshmallows and melted butter into a microwave safe bowl. Microwave for 30 seconds and mix to combine. Set aside.',
-        'Next, add the gelatine and water to a small mixing bowl and mix to combine. Microwave for 30 seconds.'
-    ],
-    comments: {
-        total: 25,
-        page: 1,
-        perPage: 5,
-        items: [
-            {
-                author: {
-                    name: 'Jelanee Uwaezuoke',
-                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-                },
-                date: 'Jan 15, 2022',
-                text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
-                rating: 4,
-                likes: 4,
-                replies: [
-                    {
-                        author: {
-                            name: 'Jelanee Uwaezuoke R',
-                            img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-                        },
-                        date: 'Jan 15, 2022',
-                        text: 'Reply',
-                        rating: 4,
-                        likes: 4,
-                        replies: [
-                            {
-                                author: {
-                                    name: 'Jelanee Uwaezuoke R',
-                                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-                                },
-                                date: 'Jan 15, 2022',
-                                text: 'Reply',
-                                likes: 4,
-                                replies: []
-                            },
-                            {
-                                author: {
-                                    name: 'Jelanee Uwaezuoke R',
-                                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-                                },
-                                date: 'Jan 15, 2022',
-                                text: 'Reply',
-                                likes: 4,
-                                replies: []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                author: {
-                    name: 'Jelanee Uwaezuoke',
-                    img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-                },
-                date: 'Jan 15, 2022',
-                text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
-                likes: 4,
-                rating: 3,
-                replies: [
-                    {
-                        author: {
-                            name: 'Jelanee Uwaezuoke',
-                            img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80'
-                        },
-                        date: 'Jan 15, 2022',
-                        text: 'Synth polaroid bitters chillwave pickled. Vegan disrupt tousled, Portland keffiyeh aesthetic food truck sriracha cornhole single-origin coffee church-key roof party.',
-                        likes: 4,
-                        replies: []
-                    }
-                ]
-            }
-        ]
-    }
+const { data: recipe } = await useFetch(`/api/prisma/recipe/${route.params.detail}`)
+const { data: comments } = await useFetch(`/api/prisma/comments/${recipe.value?.id}`)
 
+const handleFavorite = async () => {
+    await $fetch(`/api/prisma/favorite/update`, {
+        method: 'POST',
+        body: {
+            recipeId: recipe.value?.id
+        }
+    })
 }
+
 const fakeData = [
     {
         image: '/images/recipe-img.jpg',

@@ -2,6 +2,5 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-    const res = await prisma.category.findMany()
-    return res
-})
+    return prisma.category.findMany();
+});

@@ -23,12 +23,13 @@ model User {
   accounts    String[]
   newsletter  Boolean
   recipes     Recipe[] @relation("recipesByAuthor")
-  favorites   Recipe[] @relation("recipesByFavorite")
+  favorites   Recipe[] @relation("UserFavorites") // Изменено для явного указания связи
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime @updatedAt
   @@map("users")
   Comment Comment[] @relation(name: "commentsByUser")
   refreshTokens RefreshToken[]
+  Like Like[]
 }
 
 model RefreshToken {
@@ -43,13 +44,13 @@ model Recipe {
   id          String @id @default(uuid()) @db.Uuid
   author_id   String @db.Uuid
   author      User  @relation(fields: [author_id], references: [id], name: "recipesByAuthor")
-  favorites   User[] @relation("recipesByFavorite")
+  favorites   User[] @relation("UserFavorites") // Изменено для явного указания связи
   image       String?
   video       String?
   rating      Int
   name        String
   category_id String  @db.Uuid
-  category    Category @relation(fields: [category_id],references: [id], name: "recipesByCategory")
+  category    Category @relation(fields: [category_id], references: [id], name: "recipesByCategory")
   trend       Int
   annotation  String?
   ingridients String[]
@@ -59,8 +60,7 @@ model Recipe {
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime @updatedAt
   @@map("recipes")
-  Comment Comment[] @relation(name: "commentsByRecipe")
-  Collections Collections[] @relation("recipesByCollection")
+  comments Comment[] @relation(name: "commentsByRecipe")
 }
 
 model Category {
@@ -86,13 +86,15 @@ model Comment {
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime @updatedAt
   @@map("comments")
+  like Like[]
 }
 
-model Collections {
-  id          String @id @default(uuid()) @db.Uuid
-  name        String
-  image       String
-  recipes     Recipe[] @relation("recipesByCollection")
-  @@map("collections")
+model Like {
+  id        String @id @default(uuid()) @db.Uuid
+  user_id   String @db.Uuid
+  user      User   @relation(fields: [user_id], references: [id])
+  comment_id String @db.Uuid
+  comment   Comment @relation(fields: [comment_id], references: [id])
 }
+
 

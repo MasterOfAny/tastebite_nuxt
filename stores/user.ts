@@ -81,7 +81,7 @@ export const useUser = defineStore('user', () => {
                 }
             } catch (error) {
                 error.value = error.data.message
-                console.error('Error fetching user data')
+                console.error('Error fetching user data (fetchUserData)')
             }
         } else {
             try {
@@ -94,7 +94,7 @@ export const useUser = defineStore('user', () => {
                 }
             } catch (error) {
                 error.value = error.data.message
-                console.error('Error fetching user data')
+                console.error('Error fetching user data (fetchUserData)')
             }
         }
     }

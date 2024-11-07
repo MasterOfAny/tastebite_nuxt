@@ -1,11 +1,12 @@
 <template>
     <div class="category-details">
-        <img src="/images/Header Image.jpg" alt="">
+        <img width="100%" height="297px" src="/images/Header Image.jpg" alt="">
         <div class="container">
             <div class="category-details__content">
                 <h1>
-                    <span>Deserts</span>
-                    <span>(98 Recipes)</span>
+                    <span>{{ route.params.detail }}</span>
+                    <span>{{ `(${category?.total} ${getNoun(category?.total ?? 0, 'Recipe', 'Recipes', 'Recipes')})`
+                        }}</span>
                 </h1>
                 <div class="category-details__annotation">
                     <p>
@@ -14,11 +15,13 @@
                         meal. Here is a recipe I created after having this dish in a restaurant. Enjoy!
                     </p>
                     <Select class="category-details__select" placeholder="Sort by" :options="selectOptions"
-                        @select="(value) => selectedOption = value" :selectedOption="selectedOption" />
+                        @select="(value) => onSelect(value)" :selectedOption="selectedOption" />
                 </div>
-                <div class="category-details__cards">
+                <div
+                    :class="{ 'category-details__cards': true, 'category-details__cards_loading': status === 'pending' }">
                     <Card v-for="(item, index) in category?.recipes" :key="index" :recipeInfo="item" path="recipes" />
                 </div>
+                <Pagination class="category-details__pagination" :page="1" :pages="10" />
             </div>
         </div>
     </div>
@@ -27,24 +30,46 @@
 <script setup lang="ts">
 import Card from '~/components/ui/Card.vue';
 import Select from '~/components/ui/Select.vue';
-const route = useRoute()
-const category = (await useFetch(`/api/prisma/recipes-by-category/${route.params.detail}`)).data.value
+const Pagination = defineAsyncComponent(() => import('~/components/ui/Pagination.vue'))
 
+onBeforeRouteUpdate((to, from) => {
+    if (to.query.sort !== from.query.sort) {
+        endpoint.value = processEndpoint()
+    }
+})
+const route = useRoute()
+const router = useRouter()
 const selectOptions = [
     {
-        id: '1',
+        id: 'recent',
         value: 'Most Recent'
     },
     {
-        id: '2',
+        id: 'oldest',
         value: 'Oldest'
     },
     {
-        id: '3',
+        id: 'ratings',
         value: 'Ratings'
     },
 ]
-const selectedOption = ref(selectOptions[0])
+const selectedOption = ref(route.query.sort ? selectOptions.find(option => option.id === route.query.sort) : selectOptions[0])
+const endpoint = ref('')
+const processEndpoint = () => {
+    let url = `/api/prisma/recipes-by-category/${route.params.detail}`
+    if (selectedOption.value?.id) {
+        url += `?sort=${selectedOption.value.id}`
+    }
+    return url
+}
+endpoint.value = processEndpoint()
+const { data: category, status, error } = await useFetch(endpoint, { watch: [endpoint] })
+
+const onSelect = (value: { id: string, value: string }) => {
+    selectedOption.value = value
+    router.push({ query: { sort: value.id } })
+}
+
 </script>
 
 <style scoped lang="sass">
@@ -61,6 +86,8 @@ const selectedOption = ref(selectOptions[0])
             font-family: var(--font-family-secondary)
             font-size: 36px
             line-height: 1.22
+            &::first-letter
+                text-transform: uppercase
         span:last-child
             font-size: 16px
             font-weight: 400
@@ -80,6 +107,11 @@ const selectedOption = ref(selectOptions[0])
         display: grid
         grid-template-columns: repeat(auto-fill, minmax(255px, 1fr))
         gap: 30px
+        transition: opacity 0.3s ease-in-out
+    &__cards_loading
+        opacity: 0.5
+    &__pagination
+        margin-top: 160px
 @media(max-width: 780px)
     .category-details
         h1

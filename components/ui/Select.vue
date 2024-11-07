@@ -3,6 +3,9 @@
         <button class="ts-select__button" role="combobox" id="select" value="Select" aria-controls="listbox"
             aria-haspopup="listbox" tabindex="0" aria-expanded="false" ref="selectButton" @keydown="handleKeyPress">
             {{ props.selectedOption?.value || props?.placeholder }}
+            <svg width="20" height="20">
+                <use xlink:href="/images/iconsList.svg#icon-chevron-down"></use>
+            </svg>
         </button>
         <ul :class="{ 'ts-select__options': true, 'ts-select__options_open': isDropdownOpen }" role="listbox"
             ref="dropdown" id="listbox" @mousemove="currentOptionIndex = -1">
@@ -156,7 +159,7 @@ const handleAlphanumericKeyPress = (key: string) => {
     position: relative
     width: 250px
     &__button
-        padding: 8px 30px 8px 8px
+        padding: 8px 16px 8px 8px
         background: var(--color-white)
         width: 100%
         border: none

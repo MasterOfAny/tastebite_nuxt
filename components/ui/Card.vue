@@ -10,9 +10,9 @@
             <NuxtLink :to="`/recipes/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__name"
                 :title="props.recipeInfo?.name">{{ props.recipeInfo?.name }}
             </NuxtLink>
-            <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity && props.recipeInfo?.recipes.length">{{
-                props.recipeInfo?.recipes.length + ' ' +
-                getNoun(props.recipeInfo?.recipes.length, 'Recipe', 'Recipes', 'Recipes') }}</span>
+            <span class="site-btn site-btn_bw-btn" v-if="props.withQuantity && props.recipeInfo?.recipes?.length">{{
+                props.recipeInfo?.recipes?.length + ' ' +
+                getNoun(props.recipeInfo?.recipes?.length, 'Recipe', 'Recipes', 'Recipes') }}</span>
         </div>
     </div>
 </template>

@@ -2,11 +2,11 @@
     <div class="comment">
         <div class="comment-main">
             <div class="comment__image">
-                <img width="48" height="48" :src="props.comment?.author?.img" alt="">
+                <img width="48" height="48" :src="props.comment?.user?.photo" alt="">
             </div>
             <div class="comment__body">
-                <div class="comment__name">{{ props.comment?.author?.name }}</div>
-                <time class="comment__date">{{ props.comment?.date }}</time>
+                <div class="comment__name">{{ props.comment?.user?.user_name }}</div>
+                <time class="comment__date">{{ formatDate(props.comment?.created_at) }}</time>
                 <div v-if="props.comment?.rating" class="comment__rating">
                     <Rating only-one-star :rating="props.comment.rating" />
                     <span>
@@ -17,44 +17,35 @@
                     {{ props.comment?.text }}
                 </div>
                 <div class="comment__actions">
-                    <div class="comment__action">
+                    <div class="comment__action" @click="commentAction('reply')">
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-comment"></use>
                         </svg>
-                        <span>Reply {{ props.comment?.replies.length > 0 ? '(' + props.comment.replies.length + ')' : ''
+                        <span>Reply {{ props.comment?.replies?.length > 0 ? '(' + props.comment?.replies?.length + ')' :
+                            ''
                             }} </span>
                     </div>
-                    <div class="comment__action">
+                    <div class="comment__action" @click="commentAction('like')">
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-favorite"></use>
                         </svg>
                         <span>{{ props.comment?.likes }}</span>
                     </div>
                 </div>
+                <CommentForm v-if="reply" :recipe-id="props.comment?.recipe_id" :parent-id="props.comment?.id" reply
+                    @cancel-reply="reply = false" />
             </div>
         </div>
-        <Comment class="comment-reply" v-if="props.comment?.replies.length > 0"
+        <Comment class="comment-reply" v-if="props.comment?.replies?.length > 0"
             v-for="(item, index) in props.comment?.replies" :key="index" :comment="item" :level="props.level + 1" />
     </div>
 </template>
 
 <script setup lang="ts">
 const Rating = defineAsyncComponent(() => import('~/components/ui/Rating.vue'));
-type CommentItem = {
-    author: {
-        name: string,
-        img: string
-    },
-    date: string,
-    text: string,
-    rating?: number,
-    likes: number,
-}
+const CommentForm = defineAsyncComponent(() => import('~/components/functional/CommentForm.vue'));
 
-type Comment = CommentItem & {
-    replies: Comment[]
-}
-
+import { useUser } from '@/stores/user';
 const props = defineProps({
     comment: {
         type: Object as () => Comment,
@@ -65,7 +56,40 @@ const props = defineProps({
         default: 0
     }
 })
+type CommentItem = {
+    id: string,
+    recipe_id: string,
+    parent_id: string,
+    user: {
+        user_name: string,
+        photo: string
+    },
+    date: string,
+    text: string,
+    rating?: number,
+    likes: number,
+}
+type Comment = CommentItem & {
+    replies: Comment[]
+}
 
+const userStore = useUser()
+const reply = ref(false)
+
+const commentAction = async (action: 'reply' | 'like') => {
+    if (!userStore.userData?.id) {
+        return
+    }
+    console.log('CLICKA');
+
+    if (action === 'reply') {
+        reply.value = true
+    } else if (action === 'like') {
+        console.log(props.comment?.id);
+
+        await $fetch(`/api/prisma/comments/update?comment_id=${props.comment?.id}`)
+    }
+}
 </script>
 
 <style scoped lang="sass">
@@ -74,10 +98,13 @@ const props = defineProps({
     padding-bottom: 21px
     display: flex
     column-gap: 24px
+    width: 100%
 .comment-reply
     margin-left: 48px
 .comment
     padding: 32px 0 0 0
+    &__body
+        width: 100%
     &__image
         min-width: 48px
         height: 48px
@@ -107,7 +134,7 @@ const props = defineProps({
         span
             font-size: 12px
     &__text
-        margin-top: 21px
+        margin-top: 10px
         line-height: 1.5
     &__actions
         margin-top: 31px

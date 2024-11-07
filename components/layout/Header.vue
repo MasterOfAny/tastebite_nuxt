@@ -16,10 +16,10 @@
                         <NuxtLink to="/categories" class="nav-list__link">Categories</NuxtLink>
                     </li>
                     <li class="nav-list__item">
-                        <NuxtLink to="#" class="nav-list__link">Ingredients</NuxtLink>
+                        <NuxtLink to="/favorites" class="nav-list__link">Favorites</NuxtLink>
                     </li>
                     <li class="nav-list__item">
-                        <NuxtLink to="#" class="nav-list__link">About us</NuxtLink>
+                        <NuxtLink to="/about" class="nav-list__link">About us</NuxtLink>
                     </li>
                 </ul>
             </nav>

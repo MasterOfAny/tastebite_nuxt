@@ -31,6 +31,8 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
+        console.log('CONTa', event.context);
+
         const user = await prisma.user.findUnique({
             where: { id: event.context.user.id },
             select: select
@@ -44,6 +46,6 @@ export default defineEventHandler(async (event) => {
         return user;
     } catch (error) {
         setResponseStatus(event, 500)
-        return { message: 'Error fetching user data' };
+        return { message: 'Error fetching user data (get)' };
     }
 });

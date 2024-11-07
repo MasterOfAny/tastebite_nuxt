@@ -9,7 +9,6 @@ const prisma = new PrismaClient()
 export default defineEventHandler(async (event) => {
     const form = formidable()
 
-    // Возвращаем Promise для работы с form
     return new Promise((resolve, reject) => {
         form.parse(event.node.req, async (err, fields, files) => {
             if (err) {

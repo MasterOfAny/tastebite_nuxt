@@ -12,29 +12,31 @@
             <Select class="category-details__select" placeholder="Sort by" :options="selectOptions"
                 @select="(value) => selectedOption = value" :selectedOption="selectedOption" />
         </div>
-        <div class="favorites-page__controls">
-            <div class="favorites-page__controls-quantity">
-                98 Recipes
+        <ClientOnly>
+            <div class="favorites-page__controls">
+                <div class="favorites-page__controls-quantity">
+                    98 Recipes
+                </div>
+                <div class="favorites-page__controls-item">
+                    <svg width="16" height="16">
+                        <use xlink:href="/images/iconsList.svg#icon-edit"></use>
+                    </svg>
+                    <span>Select</span>
+                </div>
+                <div class="favorites-page__controls-item">
+                    <Checkbox name="all">All</Checkbox>
+                </div>
+                <div class="favorites-page__controls-item">
+                    <svg width="16" height="16">
+                        <use xlink:href="/images/iconsList.svg#icon-delete-bin"></use>
+                    </svg>
+                    <span>Delete</span>
+                </div>
             </div>
-            <div class="favorites-page__controls-item">
-                <svg width="16" height="16">
-                    <use xlink:href="/images/iconsList.svg#icon-edit"></use>
-                </svg>
-                <span>Select</span>
+            <div class="favorites-page__cards">
+                <Card v-for="(item, index) in favorites" :key="index" :recipeInfo="item" path="recipes" />
             </div>
-            <div class="favorites-page__controls-item">
-                <Checkbox name="all">All</Checkbox>
-            </div>
-            <div class="favorites-page__controls-item">
-                <svg width="16" height="16">
-                    <use xlink:href="/images/iconsList.svg#icon-delete-bin"></use>
-                </svg>
-                <span>Delete</span>
-            </div>
-        </div>
-        <div class="favorites-page__cards">
-            <Card v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData]" :key="index" :recipeInfo="item" />
-        </div>
+        </ClientOnly>
     </div>
 </template>
 
@@ -42,29 +44,11 @@
 import Card from '~/components/ui/Card.vue';
 import Select from '~/components/ui/Select.vue';
 import Checkbox from '~/components/ui/Checkbox.vue';
-const fakeData = [
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 4.6,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 177
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 3.2,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 18
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 66
-    },
-]
+const favorites = ref([])
+onMounted(async () => {
+    favorites.value = await $fetch('/api/prisma/favorite/get')
+    console.log(favorites.value);
+})
 const selectOptions = [
     {
         id: '1',

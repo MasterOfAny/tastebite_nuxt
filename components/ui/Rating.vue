@@ -35,8 +35,9 @@
                 @mouseover="mouseOver = n">
                 <path fill-rule="evenodd" clip-rule="evenodd"
                     d="M5.49723 4.89773L7.40227 1.03833C7.64683 0.542887 8.35332 0.542887 8.59788 1.03833L10.5029 4.89773L14.7632 5.52042C15.3098 5.60032 15.5276 6.27221 15.1319 6.65765L12.0498 9.65966L12.7771 13.9007C12.8706 14.4454 12.2989 14.8607 11.8098 14.6035L8.00007 12.6L4.19038 14.6035C3.70129 14.8607 3.12959 14.4454 3.223 13.9007L3.95039 9.65966L0.868253 6.65765C0.472524 6.27221 0.690379 5.60032 1.23699 5.52042L5.49723 4.89773Z"
-                    :fill="mouseOver >= n ? '#FF642F' : 'var(--color-gray-other-light'" stroke-width="1"
-                    :stroke="mouseOver >= n ? '#FF642F' : 'var(--color-gray-other-light)'" />
+                    :fill="mouseOver >= n || props.rating >= n ? '#FF642F' : 'var(--color-gray-other-light)'"
+                    stroke-width="1"
+                    :stroke="mouseOver >= n || props.rating >= n ? '#FF642F' : 'var(--color-gray-other-light)'" />
             </svg>
         </template>
     </div>

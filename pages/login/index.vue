@@ -117,7 +117,7 @@ const onSubmit = async (e: Event) => {
 
 watch(isAuth, async (newVal) => {
     if (newVal) {
-        await navigateTo('/account')
+        await navigateTo(localStorage.getItem('beforeLoginUrl') || '/account', { external: true })
     }
 })
 </script>

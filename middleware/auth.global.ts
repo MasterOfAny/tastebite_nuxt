@@ -7,10 +7,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
         if (refreshToken && isAuth.value && !userStore.userData?.id) {
             await userStore.fetchUserData()
-
         }
     } catch (error) {
-        console.error('Error fetching user data')
+        console.error('Error fetching user data (middleware)')
     }
 
     if (userStore.userData?.id && to.path === '/login') {
