@@ -52,12 +52,8 @@
                     </p>
                 </div>
                 <div class="page-recipe__media">
-                    <img v-if="!recipe?.video && recipe?.image" width="600" height="380" :src="recipe.image" alt="">
-                    <!--  <iframe v-else width="560" height="315"
-                    src="https://www.youtube.com/embed/fZ13nRpZIAU?si=mxX5I4Fyg01yHunn" title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+                    <img width="600" height="380" :src="recipe.image" alt="">
+
                 </div>
                 <div class="page-recipe__content container">
                     <div class="page-recipe__column-left">
@@ -72,7 +68,7 @@
                             </div>
                             <div class="recipe-time__item">
                                 <span>servings</span>
-                                <span>{{ recipe?.stats?.servings }} min</span>
+                                <span>{{ recipe?.stats?.servings }} person</span>
                             </div>
                         </div>
                         <div class="recipe-ingridients">
@@ -100,7 +96,7 @@
                             <div class="recipe-nutrition__content">
                                 <h2 class="recipe-page__minor-header">Nutrition Facts</h2>
                                 <div class="recipe-nutrition__facts">
-                                    <div v-for="fact in recipe?.nutritionFacts" :key="fact.name"
+                                    <div v-for="fact in recipe?.nutrition" :key="fact.name"
                                         class="recipe-nutrition__fact">
                                         <span>
                                             {{ fact.name }}
@@ -112,13 +108,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="fresh-recipes">
-                            <h2 class="recipe-page__minor-header">Fresh Recipes</h2>
-                            <div class="fresh-recipes__list">
-                                <Card v-for="item in fakeData" :key="item?.name" class="fresh-recipes__item"
-                                    :recipe-info="item" two-columns with-rating path="recipe" />
+                        <ClientOnly>
+                            <div class="fresh-recipes" v-if="recipes.length">
+                                <h2 class="recipe-page__minor-header">Fresh Recipes</h2>
+                                <div class="fresh-recipes__list">
+                                    <Card v-for="item in recipes" :key="item?.name" class="fresh-recipes__item"
+                                        :recipe-info="item" two-columns with-rating path="recipes" />
+                                </div>
                             </div>
-                        </div>
+                        </ClientOnly>
                         <Newsletter />
                     </div>
                 </div>
@@ -127,16 +125,20 @@
         <section id="comments" class="comments-block">
             <div class="comments-block__header">
                 <h2>Comments</h2>
-                <span v-if="comments?.total">({{ comments?.total }})</span>
+                <span class="comments-total" v-if="comments?.total || insertedComments">({{ comments?.total || 0
+                    }})</span>
             </div>
-            <CommentForm :recipe-id="recipe?.id" />
-            <template v-if="comments?.items">
-                <Select :options="selectOptions" placeholder="Sort by" @select="(value) => selectedOption = value"
+            <CommentForm :recipe-id="recipe?.id" @comment-posted="(value) => { insertComment(value) }" />
+            <template v-if="comments?.items.length || insertedComments">
+                <Select :options="selectOptions" placeholder="Sort by" @select="(value) => onSelect(value)"
                     :selected-option="selectedOption" />
-                <div class="comments-block__list">
-                    <Comment v-for="(item, index) in comments?.items" :key="index" :comment="item"
-                        class="comments-block__list-item" />
+                <div class="comments-block__list" :key="comments?.sort">
+                    <Comment v-for="item in comments?.items" :key="item.id" :comment="item"
+                        @comment-updated="(value) => { insertComment(value) }" class="comments-block__list-item" />
                 </div>
+                <Button class="comments-block__load-more" orange-button v-if="commentsPage <= pagesLeft"
+                    @click="loadNewPage">Load
+                    more</Button>
             </template>
         </section>
     </div>
@@ -148,8 +150,17 @@ import Checkbox from '~/components/ui/Checkbox.vue';
 import Newsletter from '~/components/functional/Newsletter.vue';
 import Card from '~/components/ui/Card.vue';
 import CommentForm from '~/components/functional/CommentForm.vue';
+import { render } from 'vue';
 const Select = defineAsyncComponent(() => import('~/components/ui/Select.vue'))
 const Comment = defineAsyncComponent(() => import('~/components/ui/Comment.vue'))
+const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
+
+onMounted(async () => {
+    recipes.value = await $fetch('/api/prisma/recipe/random-recipes?count=3')
+})
+
+const recipes = ref([])
+const insertedComments = ref(false)
 
 const route = useRoute()
 const selectOptions = [
@@ -159,8 +170,6 @@ const selectOptions = [
     { id: 'ratings', value: 'Ratings' },
 ]
 const selectedOption = ref(selectOptions[0])
-const { data: recipe } = await useFetch(`/api/prisma/recipe/${route.params.detail}`)
-const { data: comments } = await useFetch(`/api/prisma/comments/${recipe.value?.id}`)
 
 const handleFavorite = async () => {
     await $fetch(`/api/prisma/favorite/update`, {
@@ -171,29 +180,87 @@ const handleFavorite = async () => {
     })
 }
 
-const fakeData = [
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 4.6,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 177
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 3.2,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 18
-    },
-    {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Chocolate and Banana Jar Cake Chocolate and Banana Jar Cake',
-        category: 'Dessert',
-        quantity: 66
-    },
-]
+const endpoint = ref('')
+const processEndpoint = () => {
+    const params = new URLSearchParams();
+    if (selectedOption.value?.id) {
+        params.append('sort', selectedOption.value.id);
+    }
+    return `/api/prisma/comments/${recipe.value?.id}?${params.toString()}`
+}
+
+const { data: recipe } = await useFetch(`/api/prisma/recipe/${route.params.detail}`)
+endpoint.value = processEndpoint()
+const { data: comments } = await useFetch(endpoint, {
+    watch: [endpoint]
+})
+
+const commentsPage = ref(comments.value?.page)
+const pagesLeft = ref(comments.value?.pagesLeft)
+
+watch(comments, () => {
+    commentsPage.value = comments.value?.page
+    pagesLeft.value = comments.value?.pagesLeft
+})
+
+const onSelect = (value: { id: string, value: string }) => {
+    selectedOption.value = value
+    endpoint.value = processEndpoint()
+}
+
+const loadNewPage = async () => {
+    const newComments = await $fetch(endpoint.value + `${endpoint.value.includes('?') ? '&' : '?'}page=${commentsPage.value + 1}`)
+    commentsPage.value = newComments?.page
+    pagesLeft.value = newComments?.pagesLeft
+    insertNewComments(newComments?.items)
+}
+
+const insertNewComments = (newComments) => {
+    const commentsBlock = document.querySelector('.comments-block__list');
+    if (commentsBlock) {
+        for (const comment of newComments) {
+            const commentComponent = h(Comment, { comment: comment });
+            render(commentComponent, commentsBlock);
+        }
+    }
+}
+
+const insertComment = async (comment) => {
+    if (!comment?.parentid) {
+        insertedComments.value = true
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(300)
+        const commentsBlock = document.querySelector('.comments-block__list');
+        if (commentsBlock) {
+            const newCommentComponent = h(Comment, {
+                comment: comment,
+                "onCommentUpdated": (comment) => {
+                    insertComment(comment)
+                }
+            });
+            render(newCommentComponent, commentsBlock, { insert: true });
+            commentsBlock.prepend(newCommentComponent.el);
+            const totalComments = document.querySelector('.comments-total')
+            if (totalComments) {
+                const currentCount = parseInt(totalComments.textContent.match(/\d+/)[0]) || 0;
+                totalComments.textContent = `(${currentCount + 1})`
+            }
+        }
+    } else {
+        const parentComment = document.querySelector(`[data-comment-id="${comment.parentid}"]`)
+        if (parentComment) {
+            const replyCommentComponent = h(Comment, {
+                comment: comment,
+                class: { 'comment-reply': true },
+                "onCommentUpdated": (comment) => {
+                    insertComment(comment)
+                }
+            })
+            render(replyCommentComponent, parentComment, { insert: true });
+            parentComment.appendChild(replyCommentComponent.el);
+        }
+    }
+}
 </script>
 
 <style scoped lang="sass">

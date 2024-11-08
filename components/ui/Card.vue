@@ -2,7 +2,7 @@
     <div
         :class="{ 'recipe-card': true, 'recipe-card_round': props.roundImage, 'recipe-card_quantity': props.withQuantity, 'recipe-card_two-columns': props.twoColumns }">
         <NuxtLink :to="`/${props.path}/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__image">
-            <img :src="props.recipeInfo?.image" alt="">
+            <img width="252px" height="189px" :src="props.recipeInfo?.image" alt="">
         </NuxtLink>
         <Rating v-if="props.withRating && props.recipeInfo?.rating" class="recipe-card__rating"
             :rating="props.recipeInfo?.rating || 2.77" />

@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
     });
 
     if (existingLike) {
-        // Удаление лайка
         await prisma.like.delete({
             where: {
                 id: existingLike.id
@@ -23,7 +22,6 @@ export default defineEventHandler(async (event) => {
         return { message: "Like removed" };
     }
 
-    // Добавление нового лайка
     await prisma.like.create({
         data: {
             user_id: userId,
@@ -31,5 +29,5 @@ export default defineEventHandler(async (event) => {
         }
     });
 
-    return { message: "Like added" };
+    return { message: "Like added" }
 });

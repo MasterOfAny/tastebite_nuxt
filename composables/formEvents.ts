@@ -17,8 +17,6 @@ const isFormValid = async (formFields: FormFields) => {
             try {
                 await formFields[field].validator.validate(formFields[field].value)
             } catch (error: any) {
-                console.log(field);
-
                 formFields[field].error = error.message
                 errorsCount++
             }

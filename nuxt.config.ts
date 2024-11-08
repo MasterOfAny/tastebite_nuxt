@@ -8,14 +8,16 @@ export default defineNuxtConfig({
     '@/sass/main.sass'
   ],
 
-  //not working
-  ssr: true
-  /* devServer: {
-    https: {
-      key: './localhost-key.pem',
-      cert: './localhost.pem'
+  vite: {
+    css: {
+      preprocessorOptions: {
+        sass: {
+          api: 'modern'
+        }
+      }
     }
-  }, */,
+  },
+  ssr: true,
 
   modules: ['@pinia/nuxt']
 })

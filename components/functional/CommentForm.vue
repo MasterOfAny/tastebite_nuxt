@@ -21,10 +21,14 @@
                 <img v-else :src="userStore.userData?.photo || ''" alt="user photo" width="20" height="20">
             </div>
             <form @submit="onSubmit">
-                <textarea class="comment-form__textarea" id="comment" name="comment"
-                    placeholder="Did you make this Recipe? Leave a comment!" v-model="text" />
+                <div :class="{ 'comment-textarea': true, 'field-error': formFields.text.error }">
+                    <textarea class="comment-form__textarea" id="comment" name="comment"
+                        placeholder="Did you make this Recipe? Leave a comment!" v-model="formFields.text.value"
+                        @input="processFormField(formFields.text)" />
+                    <div v-if="formFields.text.error" class="field-error-text">{{ formFields.text.error }}</div>
+                </div>
                 <div class="comment-form__body">
-                    <div class="comment-form__rating">
+                    <div class="comment-form__rating" v-if="!props.reply">
                         <span>Your Rating: </span>
                         <Rating :rating="rating" interactive @set-rating="(value) => rating = value" />
                     </div>
@@ -46,7 +50,9 @@
 const Rating = defineAsyncComponent(() => import('~/components/ui/Rating.vue'));
 const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'));
 import { useUser } from '@/stores/user';
-
+import getValidator from "~/composables/validators";
+import type { FormFields } from "~/types/types";
+import { processFormField, isFormValid } from "~/composables/formEvents";
 const props = defineProps({
     recipeId: {
         type: String,
@@ -62,11 +68,16 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['cancelReply'])
+const emit = defineEmits({
+    cancelReply() { },
+    commentPosted(comment) { return comment }
+})
 
 const userStore = useUser()
 const rating = ref(0)
-const text = ref('')
+const formFields = ref<FormFields>({
+    text: { value: '', error: '', validator: getValidator('required') }
+})
 const formSending = ref(false)
 const storeUrl = () => {
     localStorage.setItem('beforeLoginUrl', window.location.href)
@@ -74,28 +85,32 @@ const storeUrl = () => {
 
 const onSubmit = async (e: Event) => {
     e.preventDefault()
+    const validateForm = await isFormValid(formFields.value)
+    if (!validateForm) return
+    let comment
     formSending.value = true
     if (!props.reply) {
-        await $fetch('/api/prisma/comments/new', {
+        comment = await $fetch('/api/prisma/comments/new', {
             method: 'POST',
-            body: { text: text.value, rating: rating.value, recipe_id: props.recipeId }
+            body: { text: formFields.value.text.value, rating: rating.value, recipe_id: props.recipeId }
         })
     } else {
-        await $fetch('/api/prisma/comments/new?' + new URLSearchParams({ comment_id: props.parentId }), {
+        comment = await $fetch('/api/prisma/comments/new?' + new URLSearchParams({ comment_id: props.parentId }), {
             method: 'POST',
-            body: { text: text.value, rating: rating.value, recipe_id: props.recipeId }
+            body: { text: formFields.value.text.value, rating: rating.value, recipe_id: props.recipeId }
         })
     }
     formSending.value = false
     rating.value = 0
-    text.value = ''
+    formFields.value.text.value = ''
+    emit('commentPosted', comment)
 }
 </script>
 
 <style scoped lang="sass">
 .comment-form
     &__no-auth
-        margin-top: 20px
+        margin: 40px 0
         display: flex
         align-items: center
         column-gap: 16px
@@ -117,6 +132,7 @@ const onSubmit = async (e: Event) => {
             cursor: pointer
             color: var(--color-orange)
     &__auth
+        margin: 40px 0
         padding: 16px
         display: flex
         column-gap: 32px

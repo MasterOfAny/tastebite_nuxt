@@ -1,14 +1,14 @@
 <template>
     <div class="pagination">
         <NuxtLink v-if="props.page > 1"
-            :to="{ name: route.name, params: route.params, query: { ...route.query, page: props.page - 1 } }"
+            :to="{ name: route.name, params: route.params, query: { ...routeQuery, ...props.page !== 2 && { page: props.page - 1 } } }"
             class="pagination__item">
             prev
         </NuxtLink>
 
         <template v-for="page in items" :key="page">
             <NuxtLink v-if="page !== 0"
-                :to="{ name: route.name, params: route.params, query: { ...route.query, page } }"
+                :to="{ name: route.name, params: route.params, query: { ...routeQuery, ...page > 1 && { page } } }"
                 :class="{ 'pagination__item': true, 'pagination__item_active': page === props.page }">
                 {{ page }}
             </NuxtLink>
@@ -16,7 +16,7 @@
         </template>
 
         <NuxtLink v-if="props.page < props.pages"
-            :to="{ name: route.name, params: route.params, query: { ...route.query, page: props.page + 1 } }"
+            :to="{ name: route.name, params: route.params, query: { ...routeQuery, page: props.page + 1 } }"
             class="pagination__item">
             next
         </NuxtLink>
@@ -36,11 +36,17 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const routeQuery = computed(() => {
+    const query = { ...route.query }
+    delete query.page
+    return query
+})
+
 
 const middlePart = (): number[] => {
     const pagesArray: number[] = []
     if (props.pages <= 5) {
-        for (let i = 2; i <= props.pages; i++) {
+        for (let i = 2; i < props.pages; i++) {
             pagesArray.push(i)
         }
     } else {

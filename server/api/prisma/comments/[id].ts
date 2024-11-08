@@ -1,6 +1,42 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+async function getReplies(commentId: string) {
+    const replies = await prisma.comment.findMany({
+        where: { parentid: commentId },
+        include: {
+            user: {
+                select: {
+                    user_name: true,
+                    photo: true,
+                }
+            },
+            _count: {
+                select: {
+                    like: true
+                }
+            },
+            replies: {
+                include: {
+                    user: {
+                        select: {
+                            user_name: true,
+                            photo: true,
+                        }
+                    },
+                    _count: {
+                        select: {
+                            like: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    return replies;
+}
+
 export default defineEventHandler(async (event) => {
     const id = event.context?.params?.id;
     const perPageQuery = getQuery(event).per_page as string;
@@ -12,32 +48,46 @@ export default defineEventHandler(async (event) => {
         order = { created_at: 'asc' };
     } else if (sort === 'helpful') {
         order = { likes: 'desc' };
+    } else if (sort === 'ratings') {
+        order = { rating: 'desc' };
     }
 
     const items = await prisma.comment.findMany({
-        take: parseInt(perPageQuery || '10'),
-        skip: (parseInt(pageQuery || '1') - 1) * parseInt(perPageQuery || '10'),
+        take: parseInt(perPageQuery || '5'),
+        skip: (parseInt(pageQuery || '1') - 1) * parseInt(perPageQuery || '5'),
         where: {
             recipe_id: id,
             parentid: null
         },
-        select: {
-            id: true,
-            created_at: true,
-            text: true,
-            rating: true,
-            recipe_id: true,
+        include: {
             replies: {
-                select: {
+                include: {
                     user: {
                         select: {
                             user_name: true,
                             photo: true,
                         }
                     },
-                    created_at: true,
-                    text: true,
-                    rating: true,
+                    _count: {
+                        select: {
+                            like: true
+                        }
+                    },
+                    replies: {
+                        include: {
+                            user: {
+                                select: {
+                                    user_name: true,
+                                    photo: true,
+                                }
+                            },
+                            _count: {
+                                select: {
+                                    like: true
+                                }
+                            }
+                        }
+                    }
                 }
             },
             user: {
@@ -55,19 +105,34 @@ export default defineEventHandler(async (event) => {
         orderBy: order
     });
 
+    await Promise.all(items.map(async (item) => {
+        item.replies = await getReplies(item.id);
+    }));
+
     const total = await prisma.comment.count({
-        where: { recipe_id: id },
+        where: {
+            recipe_id: id,
+            parentid: null
+        },
     });
 
     return {
         page: parseInt(pageQuery || '1'),
         total,
-        pagesLeft: Math.ceil(total / parseInt(perPageQuery || '10')) - parseInt(pageQuery || '1'),
-        perPage: parseInt(perPageQuery || '10'),
+        pagesLeft: Math.ceil(total / parseInt(perPageQuery || '5')) - parseInt(pageQuery || '1'),
+        perPage: parseInt(perPageQuery || '5'),
         sort: sort,
         items: items.map(item => ({
             ...item,
-            likes: item._count.like
+            likes: item._count.like,
+            replies: item.replies.map(reply => ({
+                ...reply,
+                likes: reply._count.like,
+                replies: reply.replies.map(subReply => ({
+                    ...subReply,
+                    likes: subReply._count.like
+                }))
+            }))
         })),
     };
 });

@@ -30,12 +30,11 @@
 <script setup lang="ts">
 import Card from '~/components/ui/Card.vue';
 import Select from '~/components/ui/Select.vue';
+import type { RouteLocationNormalized } from 'vue-router';
 const Pagination = defineAsyncComponent(() => import('~/components/ui/Pagination.vue'))
 
 onBeforeRouteUpdate((to, from) => {
-    if (to.query.sort !== from.query.sort) {
-        endpoint.value = processEndpoint()
-    }
+    endpoint.value = processEndpoint(to)
 })
 const route = useRoute()
 const router = useRouter()
@@ -55,14 +54,18 @@ const selectOptions = [
 ]
 const selectedOption = ref(route.query.sort ? selectOptions.find(option => option.id === route.query.sort) : selectOptions[0])
 const endpoint = ref('')
-const processEndpoint = () => {
+const processEndpoint = (to: RouteLocationNormalized) => {
     let url = `/api/prisma/recipes-by-category/${route.params.detail}`
-    if (selectedOption.value?.id) {
-        url += `?sort=${selectedOption.value.id}`
+    const params = new URLSearchParams();
+    if (to.query.page) {
+        params.append('page', to.query.page as string);
     }
-    return url
+    if (to.query.sort) {
+        params.append('sort', to.query.sort as string);
+    }
+    return `${url}?${params.toString()}`
 }
-endpoint.value = processEndpoint()
+endpoint.value = processEndpoint(route)
 const { data: category, status, error } = await useFetch(endpoint, { watch: [endpoint] })
 
 const onSelect = (value: { id: string, value: string }) => {

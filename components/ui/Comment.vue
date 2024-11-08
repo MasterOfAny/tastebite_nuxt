@@ -1,5 +1,5 @@
 <template>
-    <div class="comment">
+    <div class="comment" :data-comment-id="props.comment?.id">
         <div class="comment-main">
             <div class="comment__image">
                 <img width="48" height="48" :src="props.comment?.user?.photo" alt="">
@@ -25,7 +25,7 @@
                             ''
                             }} </span>
                     </div>
-                    <div class="comment__action" @click="commentAction('like')">
+                    <div class="comment__action like" @click="commentAction('like')">
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-favorite"></use>
                         </svg>
@@ -33,19 +33,22 @@
                     </div>
                 </div>
                 <CommentForm v-if="reply" :recipe-id="props.comment?.recipe_id" :parent-id="props.comment?.id" reply
-                    @cancel-reply="reply = false" />
+                    @comment-posted="(value) => { uu(value) }" />
             </div>
         </div>
         <Comment class="comment-reply" v-if="props.comment?.replies?.length > 0"
-            v-for="(item, index) in props.comment?.replies" :key="index" :comment="item" :level="props.level + 1" />
+            v-for="(item, index) in props.comment?.replies" :key="index" :comment="item" :level="props.level + 1"
+            @comment-updated="(value) => emits('commentUpdated', value)" />
     </div>
 </template>
 
 <script setup lang="ts">
 const Rating = defineAsyncComponent(() => import('~/components/ui/Rating.vue'));
 const CommentForm = defineAsyncComponent(() => import('~/components/functional/CommentForm.vue'));
-
 import { useUser } from '@/stores/user';
+const emits = defineEmits({
+    commentUpdated(comment) { return comment },
+})
 const props = defineProps({
     comment: {
         type: Object as () => Comment,
@@ -75,19 +78,29 @@ type Comment = CommentItem & {
 
 const userStore = useUser()
 const reply = ref(false)
+const uu = (value) => {
+    emits('commentUpdated', value);
+    setTimeout(() => { reply.value = false }, 100);
+}
 
 const commentAction = async (action: 'reply' | 'like') => {
     if (!userStore.userData?.id) {
         return
     }
-    console.log('CLICKA');
-
     if (action === 'reply') {
         reply.value = true
-    } else if (action === 'like') {
-        console.log(props.comment?.id);
-
-        await $fetch(`/api/prisma/comments/update?comment_id=${props.comment?.id}`)
+    } else if (action === 'like' || (props.comment?.user?.user_name !== userStore.userData?.user_name && props.comment?.likes < 1)) {
+        const res = await $fetch(`/api/prisma/comments/update?comment_id=${props.comment?.id}`)
+        const commentLike = document.querySelector(`[data-comment-id="${props.comment?.id}"] .comment__action.like span`)
+        if (res?.message?.includes('added')) {
+            if (commentLike) {
+                commentLike.textContent = (Number(commentLike.textContent) + 1).toString()
+            }
+        } else {
+            if (commentLike) {
+                commentLike.textContent = (Number(commentLike.textContent) - 1).toString()
+            }
+        }
     }
 }
 </script>

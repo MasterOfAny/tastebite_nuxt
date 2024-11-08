@@ -31,6 +31,9 @@ export default defineEventHandler(async (event) => {
     };
 
     const handleSignUp = async () => {
+        const existingUser = await prisma.user.findUnique({ where: { email: email } });
+        if (existingUser) return handleError(400, 'Пользователь с таким email уже существует.');
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
             data: {
@@ -39,10 +42,12 @@ export default defineEventHandler(async (event) => {
                 newsletter: false,
                 photo: '',
                 name: name,
-                user_name: '',
-                accounts: []
+                user_name: name,
+                accounts: [],
+
             }
         });
+
         const { access_token, refresh_token } = setTokens(user.id);
         await prisma.refreshToken.create({
             data: {
@@ -52,12 +57,13 @@ export default defineEventHandler(async (event) => {
         });
         setCookie(event, 'access_token', access_token, { httpOnly: true });
         setCookie(event, 'refresh_token', refresh_token, { httpOnly: true });
-        return { message: 'signed in successfully.' };
+        return { message: 'Успешная регистрация.' };
     };
 
     try {
         return name ? await handleSignUp() : await handleSignIn();
     } catch (error) {
+        console.log(error)
         return handleError(500, 'An error occurred. Try again later.');
     }
 

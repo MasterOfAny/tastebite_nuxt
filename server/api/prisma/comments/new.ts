@@ -12,23 +12,17 @@ export default defineEventHandler(async (event) => {
             return { message: 'Forbidden symbols' }
         }
     }
-    if (!commentId) {
-        await prisma.comment.create({
-            data: {
-                ...body,
-                likes: 0,
-                user_id: event.context.user.id
-            }
-        })
-    } else {
-        await prisma.comment.create({
-            data: {
-                ...body,
-                parentid: commentId,
-                likes: 0,
-                user_id: event.context.user.id
-            }
-        })
-    }
-    return null
+    const comment = await prisma.comment.create({
+        data: {
+            ...body,
+            parentid: commentId,
+            likes: 0,
+            user_id: event.context.user.id,
+        },
+        include: {
+            user: { select: { user_name: true, photo: true } }
+        }
+    })
+
+    return { ...comment, userName: comment.user.name, userPhoto: comment.user.photo }
 })

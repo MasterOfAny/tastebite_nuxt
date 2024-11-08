@@ -10,7 +10,7 @@
                 :style="{ height: isMenuOpen.status ? '180px' : undefined }">
                 <ul class="nav-list">
                     <li class="nav-list__item">
-                        <NuxtLink to="#" class="nav-list__link">Recipes</NuxtLink>
+                        <NuxtLink to="/recipes" class="nav-list__link">Recipes</NuxtLink>
                     </li>
                     <li class="nav-list__item">
                         <NuxtLink to="/categories" class="nav-list__link">Categories</NuxtLink>
@@ -27,13 +27,12 @@
                 <svg class="header-search" width="32" height="32" @click="emit('showSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-search"></use>
                 </svg>
-                {{ }}
                 <div class="header-login">
                     <NuxtLink to="/account" class="header-profile">
-                        <svg v-if="!userStore.userData?.photo" class="header-profile__no-auth" width="24" height="24">
+                        <svg v-if="!userStore.userData?.photo" class="header-profile__no-auth" width="30" height="30">
                             <use xlink:href="/images/iconsList.svg#icon-user-no-auth"></use>
                         </svg>
-                        <img v-else :src="userStore.userData?.photo || ''" alt="user" width="24" height="24">
+                        <img v-else :src="userStore.userData?.photo || ''" alt="user" width="30" height="30">
                     </NuxtLink>
                     <div v-if="!isAuth" class="header-login__popup" @click="router.push('/login')">
                         Sign in or Sign up

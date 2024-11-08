@@ -101,7 +101,9 @@ const openModal = ref(false)
 const onSubmit = async (e: Event) => {
     e.preventDefault()
     const validateFormFields = isSignUp.value ? formFields.value : { ...formFields.value }
-    delete validateFormFields.nameInput
+    if (!isSignUp.value) {
+        delete validateFormFields.nameInput
+    }
     const validateForm = await isFormValid(validateFormFields)
     if (!validateForm) return
     formSending.value = true

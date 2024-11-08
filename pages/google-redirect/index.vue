@@ -1,4 +1,5 @@
 <template>
+    <meta name="robots" content="noindex, nofollow">
 </template>
 
 <script setup lang="ts">

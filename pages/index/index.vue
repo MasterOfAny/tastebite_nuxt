@@ -75,11 +75,11 @@ import Newsletter from "~/components/functional/Newsletter.vue";
 import type { Category, Recipe } from "~/types/types";
 
 const requests = await Promise.all([
-    useFetch('/api/prisma/random-recipes'),
-    useFetch('/api/prisma/random-recipes?count=3'),
-    useFetch('/api/prisma/recipes-by-category/dessert?per_page=3'),
-    useFetch('/api/prisma/random-categories?count=6'),
-    useFetch('/api/prisma/all-recipes'),
+    useFetch('/api/prisma/recipe/random-recipes'),
+    useFetch('/api/prisma/recipe/random-recipes?count=3'),
+    useFetch('/api/prisma/recipe/recipes-by-category/dessert?per_page=3'),
+    useFetch('/api/prisma/category/random-categories?count=6'),
+    useFetch('/api/prisma/recipe/all-recipes'),
 ])
 
 const [randomRecipe, randomRecipes, recipesByCategory, randomCategories, allRecipes] = (requests).map((res) => res.data.value) as [Recipe, Recipe[], Recipe[], Category[], Recipe[],]
