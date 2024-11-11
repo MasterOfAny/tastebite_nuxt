@@ -16,6 +16,12 @@ import Header from "@/components/layout/Header.vue"
 import Footer from "@/components/layout/Footer.vue"
 const SearchPanel = defineAsyncComponent(() => import("@/components/functional/SearchPanel.vue"))
 const isShowSearchPanel = ref(false)
+
+const { fetchFavorite } = useFavorite()
+
+onMounted(async () => {
+    await fetchFavorite()
+})
 </script>
 
 <style lang="sass">

@@ -64,7 +64,7 @@
             <Card class="content-section__card" v-for="(item, index) in allRecipes" :key="index" :recipeInfo="item"
                 path="recipes" />
         </div>
-        <button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</button>
+        <Button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</Button>
     </section>
 </template>
 
@@ -73,6 +73,7 @@ import Card from "@/components/ui/Card.vue"
 import processLink from "@/composables/processLink";
 import Newsletter from "~/components/functional/Newsletter.vue";
 import type { Category, Recipe } from "~/types/types";
+const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
 
 const requests = await Promise.all([
     useFetch('/api/prisma/recipe/random-recipes'),

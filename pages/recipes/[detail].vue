@@ -1,5 +1,9 @@
 <template>
     <div class="recipe-page">
+
+        <Head>
+            <Title>{{ recipe?.name }}</Title>
+        </Head>
         <section>
             <div class="page-top">
                 <div class="page-top__actions-panel">
@@ -15,7 +19,7 @@
                         <svg width="32" height="32">
                             <use xlink:href="/images/iconsList.svg#icon-print"></use>
                         </svg>
-                        <svg width="32" height="32" @click="handleFavorite">
+                        <svg width="32" height="32" @click="handleFavorite" :class="{ 'favorite-active': inFavorite }">
                             <use xlink:href="/images/iconsList.svg#icon-bookmark"></use>
                         </svg>
                     </div>
@@ -32,13 +36,13 @@
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-calendar"></use>
                         </svg>
-                        <time datetime="">{{ recipe?.date }}</time>
+                        <time datetime="">{{ formatDate(recipe?.created_at) }}</time>
                     </div>
                     <a href="#comments" class="page-top__comments page-top__info_flex">
                         <svg width="16" height="16">
                             <use xlink:href="/images/iconsList.svg#icon-comment"></use>
                         </svg>
-                        <span>{{ recipe?.comments?.total }}</span>
+                        <span>{{ comments?.total }}</span>
                     </a>
                     <div class="page-top__rating">
                         <Rating :rating="recipe?.rating" />
@@ -52,8 +56,13 @@
                     </p>
                 </div>
                 <div class="page-recipe__media">
-                    <img width="600" height="380" :src="recipe.image" alt="">
-
+                    <a class="page-recipe__media-link" :href="recipe?.video" target="_blank" v-if="recipe?.video">
+                        <svg class="youtube" width="120" height="100">
+                            <use xlink:href="/images/iconsList.svg#icon-youtube"></use>
+                        </svg>
+                        <img :src="getYoutubeThumbnail(recipe.video)" alt="">
+                    </a>
+                    <img v-else="recipe?.image" width="600" height="380" :src="recipe.image" alt="">
                 </div>
                 <div class="page-recipe__content container">
                     <div class="page-recipe__column-left">
@@ -136,9 +145,8 @@
                     <Comment v-for="item in comments?.items" :key="item.id" :comment="item"
                         @comment-updated="(value) => { insertComment(value) }" class="comments-block__list-item" />
                 </div>
-                <Button class="comments-block__load-more" orange-button v-if="commentsPage <= pagesLeft"
-                    @click="loadNewPage">Load
-                    more</Button>
+                <Button class="comments-block__load-more" orange-button v-if="commentsPage <= pagesLeft || pageLoading"
+                    :loading="pageLoading" @click="loadNewPage">Load more</Button>
             </template>
         </section>
     </div>
@@ -154,13 +162,19 @@ import { render } from 'vue';
 const Select = defineAsyncComponent(() => import('~/components/ui/Select.vue'))
 const Comment = defineAsyncComponent(() => import('~/components/ui/Comment.vue'))
 const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
+import { formatDate } from '~/composables/formatDate';
+import { getYoutubeThumbnail } from '~/composables/getYoutubeThumbnail';
+import { useFavorite } from '~/stores/favorite';
 
 onMounted(async () => {
     recipes.value = await $fetch('/api/prisma/recipe/random-recipes?count=3')
 })
 
+const favorite = useFavorite()
 const recipes = ref([])
 const insertedComments = ref(false)
+const pageLoading = ref(false)
+const inFavorite = computed(() => favorite.favorite?.find(item => item.id === recipe.value?.id))
 
 const route = useRoute()
 const selectOptions = [
@@ -172,12 +186,7 @@ const selectOptions = [
 const selectedOption = ref(selectOptions[0])
 
 const handleFavorite = async () => {
-    await $fetch(`/api/prisma/favorite/update`, {
-        method: 'POST',
-        body: {
-            recipeId: recipe.value?.id
-        }
-    })
+    favorite.updateFavorite({ recipeId: recipe.value?.id })
 }
 
 const endpoint = ref('')
@@ -209,10 +218,12 @@ const onSelect = (value: { id: string, value: string }) => {
 }
 
 const loadNewPage = async () => {
+    pageLoading.value = true
     const newComments = await $fetch(endpoint.value + `${endpoint.value.includes('?') ? '&' : '?'}page=${commentsPage.value + 1}`)
     commentsPage.value = newComments?.page
     pagesLeft.value = newComments?.pagesLeft
     insertNewComments(newComments?.items)
+    pageLoading.value = false
 }
 
 const insertNewComments = (newComments) => {
@@ -226,36 +237,30 @@ const insertNewComments = (newComments) => {
 }
 
 const insertComment = async (comment) => {
+    const commentsBlock = document.querySelector('.comments-block__list');
+    const totalComments = document.querySelector('.comments-total');
+
     if (!comment?.parentid) {
-        insertedComments.value = true
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-        await sleep(300)
-        const commentsBlock = document.querySelector('.comments-block__list');
-        if (commentsBlock) {
-            const newCommentComponent = h(Comment, {
-                comment: comment,
-                "onCommentUpdated": (comment) => {
-                    insertComment(comment)
-                }
-            });
-            render(newCommentComponent, commentsBlock, { insert: true });
-            commentsBlock.prepend(newCommentComponent.el);
-            const totalComments = document.querySelector('.comments-total')
-            if (totalComments) {
-                const currentCount = parseInt(totalComments.textContent.match(/\d+/)[0]) || 0;
-                totalComments.textContent = `(${currentCount + 1})`
-            }
+        insertedComments.value = true;
+        const newCommentComponent = h(Comment, {
+            comment: comment,
+            "onCommentUpdated": insertComment
+        });
+        render(newCommentComponent, commentsBlock, { insert: true });
+        commentsBlock.prepend(newCommentComponent.el);
+
+        if (totalComments) {
+            const currentCount = parseInt(totalComments.textContent.match(/\d+/)[0]) || 0;
+            totalComments.textContent = `(${currentCount + 1})`;
         }
     } else {
-        const parentComment = document.querySelector(`[data-comment-id="${comment.parentid}"]`)
+        const parentComment = document.querySelector(`[data-comment-id="${comment.parentid}"]`);
         if (parentComment) {
             const replyCommentComponent = h(Comment, {
                 comment: comment,
                 class: { 'comment-reply': true },
-                "onCommentUpdated": (comment) => {
-                    insertComment(comment)
-                }
-            })
+                "onCommentUpdated": insertComment
+            });
             render(replyCommentComponent, parentComment, { insert: true });
             parentComment.appendChild(replyCommentComponent.el);
         }
@@ -290,6 +295,13 @@ const insertComment = async (comment) => {
         display: grid
         grid-auto-flow: column
         gap: 32px
+        svg
+            cursor: pointer
+            &:hover
+                color: var(--color-orange)
+    .favorite-active
+        color: var(--color-orange)
+        animation: pulse 1s ease
     &__info
         padding: 32px 0
         border-bottom: 1px solid var(--color-gray-other-light)
@@ -323,6 +335,16 @@ const insertComment = async (comment) => {
         border-right: 1px solid var(--color-gray-other-light)
     &__column-right
         grid-column: 10/14
+    &__media
+        margin-top: 20px
+    &__media-link
+        position: relative
+        svg
+            position: absolute
+            top: 50%
+            left: 50%
+            transform: translate(-50%, -50%) 
+            color: #f50057
 .recipe-time
     display: flex
     align-items: center
@@ -453,6 +475,25 @@ const insertComment = async (comment) => {
             line-height: 1.58
     &__list
         margin-left: -48px
+    &:deep(.comment)
+        animation: appear 0.5s ease
+    &__load-more
+        margin-top: 40px
+        height: 40px
+@keyframes appear
+    0%
+        opacity: 0
+        transform: translateY(-10px)
+    100%
+        opacity: 1
+        transform: translateY(0)
+@keyframes pulse
+    0%
+        transform: scale(1)
+    50%
+        transform: scale(1.2)
+    100%
+        transform: scale(1)
 @media(max-width: 1170px)
     .page-recipe
         &__column-left
@@ -549,5 +590,4 @@ const insertComment = async (comment) => {
                 line-height: 1.25
         &__list
             margin-left: -16px
-
 </style>
