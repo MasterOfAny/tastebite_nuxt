@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+console.log(import.meta.env.API_BASE_URL)
 import Card from "@/components/ui/Card.vue"
 import processLink from "@/composables/processLink";
 import Newsletter from "~/components/functional/Newsletter.vue";
