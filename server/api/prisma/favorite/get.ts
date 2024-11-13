@@ -4,6 +4,12 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
     const userId = event.context.user.id;
+    if (!userId) {
+        setResponseStatus(event, 401);
+        return {
+            message: 'Unauthorized',
+        };
+    }
 
     try {
         const favoriteRecipes = await prisma.recipe.findMany({

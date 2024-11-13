@@ -9,7 +9,7 @@ definePageMeta({
 })
 onBeforeMount(async () => {
     try {
-        await $fetch(`http://localhost:3000/api/google/callback?code=${route.query.code}`)
+        await $fetch(`${getBaseApiUrl()}/google/callback?code=${route.query.code}`)
         const isAuth = useCookie<boolean>('isAuth')
         isAuth.value = true
     } catch (error) {

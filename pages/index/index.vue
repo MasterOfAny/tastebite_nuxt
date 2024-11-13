@@ -73,11 +73,11 @@ import type { Category, Recipe } from "~/types/types";
 const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
 
 const requests = await Promise.all([
-    useFetch('/api/prisma/recipe/random-recipes'),
-    useFetch('/api/prisma/recipe/random-recipes?count=3'),
-    useFetch('/api/prisma/recipe/recipes-by-category/dessert?per_page=3'),
-    useFetch('/api/prisma/category/random-categories?count=6'),
-    useFetch('/api/prisma/recipe/all-recipes'),
+    useFetch(`${getBaseApiUrl()}/prisma/recipe/random-recipes`),
+    useFetch(`${getBaseApiUrl()}/prisma/recipe/random-recipes?count=3`),
+    useFetch(`${getBaseApiUrl()}/prisma/recipe/recipes-by-category/dessert?per_page=3`),
+    useFetch(`${getBaseApiUrl()}/prisma/category/random-categories?count=6`),
+    useFetch(`${getBaseApiUrl()}/prisma/recipe/all-recipes`),
 ])
 
 const [randomRecipe, randomRecipes, recipesByCategory, randomCategories, allRecipes] = (requests).map((res) => res.data.value) as [Recipe, Recipe[], Recipe[], Category[], Recipe[],]

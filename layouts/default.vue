@@ -18,9 +18,12 @@ const SearchPanel = defineAsyncComponent(() => import("@/components/functional/S
 const isShowSearchPanel = ref(false)
 
 const { fetchFavorite } = useFavorite()
+const { userData } = useUser()
 
 onMounted(async () => {
-    await fetchFavorite()
+    if (userData?.id) {
+        await fetchFavorite()
+    }
 })
 </script>
 

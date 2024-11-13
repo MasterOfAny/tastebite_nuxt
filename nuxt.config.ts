@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@/sass/reset.sass',
     '@/sass/main.sass'
   ],
-
   vite: {
     build: {
       modulePreload: false,

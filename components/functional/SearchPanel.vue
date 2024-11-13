@@ -52,7 +52,7 @@ const search = async (e: Event) => {
     abortController = new AbortController()
     searchQuery.value = (e.target as HTMLInputElement).value;
     try {
-        results.value = await $fetch(`/api/prisma/search?search=${searchQuery.value}`, {
+        results.value = await $fetch(`${getBaseApiUrl()}/prisma/search?search=${searchQuery.value}`, {
             signal: abortController.signal
         });
     } catch (error) {

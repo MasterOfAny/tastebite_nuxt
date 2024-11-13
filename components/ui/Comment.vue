@@ -90,7 +90,7 @@ const commentAction = async (action: 'reply' | 'like') => {
     if (action === 'reply') {
         reply.value = true
     } else if (action === 'like' || (props.comment?.user?.user_name !== userStore.userData?.user_name && props.comment?.likes < 1)) {
-        const res = await $fetch(`/api/prisma/comments/update?comment_id=${props.comment?.id}`)
+        const res = await $fetch(`${getBaseApiUrl()}/prisma/comments/update?comment_id=${props.comment?.id}`)
         const commentLike = document.querySelector(`[data-comment-id="${props.comment?.id}"] .comment__action.like span`)
         if (res?.message?.includes('added')) {
             if (commentLike) {
