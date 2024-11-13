@@ -1,37 +1,73 @@
 <template>
     <div class="search-page">
-        <h1>"Desert" - 180 resipes</h1>
+
+        <Head>
+            <Title>"{{ route.query.search }}" {{ recipes?.total + ' ' + getNoun(recipes?.total, 'recipe', 'recipes',
+                'recipes') }} </Title>
+        </Head>
+        <h1>"{{ route.query.search }}" {{ recipes?.total + ' ' + getNoun(recipes?.total, 'recipe', 'recipes', 'recipes')
+            }} </h1>
+        <Select class="search-page__select" placeholder="Sort by" :options="selectOptions"
+            @select="(value) => onSelect(value)" :selectedOption="selectedOption" />
         <div class="search-page__cards">
-            <Card v-for="(item, index) in [...fakeData, ...fakeData, ...fakeData]" :key="index" :recipeInfo="item" />
+            <Card v-for="item in recipes?.items" :key="item?.id" :recipeInfo="item" />
         </div>
+        {{ recipes?.total }}
+        <Pagination v-if="recipes?.pagesLeft > 0" class="search-page__pagination" :page="recipes?.page"
+            :pages="recipes?.page + recipes?.pagesLeft" />
     </div>
 </template>
 
 <script setup lang="ts">
 import Card from '~/components/ui/Card.vue';
-const fakeData = [
+import { getNoun } from '@/composables/getNoun';
+import Select from '~/components/ui/Select.vue';
+import type { RouteLocationNormalized } from 'vue-router';
+const Pagination = defineAsyncComponent(() => import('~/components/ui/Pagination.vue'))
+
+onBeforeRouteUpdate((to, from) => {
+    endpoint.value = processEndpoint(to)
+})
+const route = useRoute()
+const router = useRouter()
+const selectOptions = [
     {
-        image: '/images/recipe-img.jpg',
-        rating: 4.6,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 177
+        id: 'recent',
+        value: 'Most Recent'
     },
     {
-        image: '/images/recipe-img.jpg',
-        rating: 3.2,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 18
+        id: 'oldest',
+        value: 'Oldest'
     },
     {
-        image: '/images/recipe-img.jpg',
-        rating: 2.5,
-        name: 'Mighty Super Cheesecake',
-        category: 'Dessert',
-        quantity: 66
+        id: 'ratings',
+        value: 'Ratings'
     },
 ]
+
+const selectedOption = ref(route.query.sort ? selectOptions.find(option => option.id === route.query.sort) : selectOptions[0])
+const endpoint = ref('')
+const processEndpoint = (to: RouteLocationNormalized) => {
+    let url = `/api/prisma/search/page`
+    const params = new URLSearchParams();
+    if (to.query.search) {
+        params.append('search', to.query.search as string);
+    }
+    if (to.query.page) {
+        params.append('page', to.query.page as string);
+    }
+    if (selectedOption.value?.id) {
+        params.append('sort', selectedOption.value.id);
+    }
+    return `${url}?${params.toString()}`;
+}
+endpoint.value = processEndpoint(route)
+const { data: recipes, status, error } = await useFetch(endpoint, { watch: [endpoint] })
+
+const onSelect = (value: { id: string, value: string }) => {
+    selectedOption.value = value
+    router.push({ query: { sort: value.id } })
+}
 </script>
 
 <style scoped lang="sass">
@@ -47,6 +83,10 @@ const fakeData = [
         display: grid
         grid-template-columns: repeat(auto-fill, minmax(255px, 1fr))
         gap: 30px
+    &__pagination
+        margin-top: 80px
+    &__select
+        margin-top: 40px
 @media(max-width: 780px)
     .search-page
         h1

@@ -55,9 +55,13 @@
 import Card from '~/components/ui/Card.vue';
 import Checkbox from '~/components/ui/Checkbox.vue';
 import { useFavorite } from '~/stores/favorite';
+import { useUser } from '~/stores/user';
 
+const userStore = useUser()
+if (!userStore.userData?.id) {
+    await navigateTo('/login')
+}
 const favorite = useFavorite()
-
 const loading = ref(false)
 const isCheckbox = ref(false)
 const checkedItems = ref([])

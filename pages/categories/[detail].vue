@@ -1,4 +1,8 @@
 <template>
+
+    <Head>
+        <Title>{{ 'Category' + ' ' + route.params.detail }}</Title>
+    </Head>
     <div class="category-details">
         <img width="100%" height="297px" src="/images/Header Image.jpg" alt="">
         <div class="container">
@@ -21,7 +25,8 @@
                     :class="{ 'category-details__cards': true, 'category-details__cards_loading': status === 'pending' }">
                     <Card v-for="(item, index) in category?.recipes" :key="index" :recipeInfo="item" path="recipes" />
                 </div>
-                <Pagination class="category-details__pagination" :page="1" :pages="10" />
+                <Pagination v-if="category?.pagesLeft > 0" class="category-details__pagination" :page="category?.page"
+                    :pages="category?.page + category?.pagesLeft" />
             </div>
         </div>
     </div>

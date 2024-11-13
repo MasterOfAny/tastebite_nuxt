@@ -1,4 +1,8 @@
 <template>
+
+    <Head>
+        <Title>Categories</Title>
+    </Head>
     <div class="categories-page">
         <h1>Categories</h1>
         <div class="categories-page__cards">

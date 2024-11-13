@@ -1,4 +1,8 @@
 <template>
+
+    <Head>
+        <Title>About us</Title>
+    </Head>
     <section class="about-page">
         <h1>About</h1>
         <div class="about-page__group">
@@ -211,7 +215,6 @@ const members = [
             column-gap: 30px
             row-gap: 30px
             grid-template-columns: 1fr 1fr 1fr
-            &__member
             img
                 width: 95px
                 height: 95px

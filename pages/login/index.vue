@@ -48,9 +48,6 @@
                     <span>Google</span>
                 </button>
             </template>
-            <!--  <div @click="googleOut">
-                Log out from Google
-            </div> -->
             <div class="login-page__signup">
                 <p>
                     {{ !isSignUp ? "Don't have an account?" : "Already have an account?" }}
@@ -58,7 +55,6 @@
                 </p>
             </div>
         </div>
-        {{ isAuth }}
         <Modal v-if="openModal" @close="openModal = false">
             <p>Wrong email or password</p>
         </Modal>

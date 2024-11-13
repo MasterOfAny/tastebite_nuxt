@@ -1,4 +1,8 @@
 <template>
+
+    <Head>
+        <Title>Tastebite - recipes</Title>
+    </Head>
     <section class="content-section">
         <div class="hero-card">
             <NuxtLink :to="`/recipes/${processLink(randomRecipe?.name, true)}`" class="hero-card__image">
@@ -51,13 +55,6 @@
     <section class="content-section newsletter-section">
         <Newsletter />
     </section>
-    <!--  <section class="content-section">
-        <h2 class="content-section__header">Hand-Picked Collections</h2>
-        <div class="content-section__cards hand-picked">
-            <Card class="content-section__card" v-for="(item, index) in []" :key="index"
-                :recipeInfo="item" withQuantity />
-        </div>
-    </section> -->
     <section class="content-section">
         <h2 class="content-section__header">Latest Recipes</h2>
         <div class="content-section__cards latest-recipes">

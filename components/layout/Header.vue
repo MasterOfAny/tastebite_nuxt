@@ -93,10 +93,16 @@ const toggleHamburger = () => {
         font-weight: 500
         line-height: 1.5
         padding: 4px 2px
+        &:hover
+            color: var(--color-orange)
 .header-actions
     display: flex
     column-gap: 32px
     align-items: center
+.header-search
+    cursor: pointer
+    &:hover
+        color: var(--color-orange)
 .header-profile
     display: flex
     justify-content: center

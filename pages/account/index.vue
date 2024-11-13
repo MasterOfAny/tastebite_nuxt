@@ -1,8 +1,11 @@
 <template>
+
+    <Head>
+        <Title>Account</Title>
+    </Head>
     <div class="account">
         <div class="account__header">
             <h1>Profile</h1>
-            <!-- <Button class="account__header-button" orange-button>save</Button> -->
         </div>
         <ClientOnly>
             <section v-if="userStore.userData?.email" class="account__body">
@@ -82,18 +85,6 @@
                     </div>
                     <Button class="account__form-btn" orange-button type="submit" :loading="formSending">save</Button>
                 </form>
-                <!--  <div class="account__other-accounts">
-                <h2 class="account-block-title">Connected Accounts</h2>
-                <div class="account__other-accounts-list">
-                    <div class="account__other-accounts-item">
-                        <div class="account__other-accounts-wrapper">
-                            <img width="120" height="60" />
-                            <span>Google</span>
-                        </div>
-                        <Button class="site-btn_bw-btn">Disconnect</Button>
-                    </div>
-                </div>
-            </div> -->
                 <div class="account__newsletter">
                     <h2 class="account-block-title">Newsletter</h2>
                     <div class="account__newsletter-text">

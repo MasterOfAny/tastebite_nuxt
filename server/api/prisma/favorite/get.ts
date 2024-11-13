@@ -19,8 +19,6 @@ export default defineEventHandler(async (event) => {
                 name: true,
                 image: true,
                 rating: true,
-                created_at: true,
-                updated_at: true,
             }
         });
 

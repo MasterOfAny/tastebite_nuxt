@@ -1,12 +1,16 @@
 <template>
     <div class="recipes-page">
+
+        <Head>
+            <Title>Recipes</Title>
+        </Head>
         <h1>Recipes</h1>
         <Select class="recipes-page__select" placeholder="Sort by" :options="selectOptions"
             @select="(value) => onSelect(value)" :selectedOption="selectedOption" />
         <div :class="{ 'recipes-page__cards': true, 'recipes-page__cards_loading': status === 'pending' }">
             <Card v-for="(item, index) in recipes?.items" :key="index" :recipeInfo="item" path="recipes" />
         </div>
-        <Pagination class="recipes-page__pagination" :page="recipes?.page"
+        <Pagination v-if="recipes?.pagesLeft > 0" class="recipes-page__pagination" :page="recipes?.page"
             :pages="recipes?.page + recipes?.pagesLeft" />
     </div>
 </template>
