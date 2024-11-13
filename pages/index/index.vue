@@ -34,22 +34,22 @@
     <section class="content-section ">
         <h2 class="content-section__header">Super Delicious</h2>
         <div class="content-section__cards grid-scroll">
-            <Card class="content-section__card" v-for="(item, index) in randomRecipes" :key="index" :recipeInfo="item"
+            <Card class="content-section__card" v-for="item in randomRecipes" :key="item?.id" :recipeInfo="item"
                 withRating path="recipes" />
         </div>
     </section>
     <section class="content-section">
         <h2 class="content-section__header">Sweet Tooth</h2>
         <div class="content-section__cards grid-scroll">
-            <Card class="content-section__card" v-for="(item, index) in recipesByCategory?.recipes" :key="index"
+            <Card class="content-section__card" v-for="item in recipesByCategory?.recipes" :key="item?.id"
                 :recipeInfo="item" withRating path="recipes" />
         </div>
     </section>
     <section class="content-section">
         <h2 class="content-section__header">Popular categories</h2>
         <div class="content-section__cards popular-categories">
-            <Card class="content-section__card" v-for="(item, index) in randomCategories" :key="index"
-                :recipeInfo="item" roundImage path="categories" />
+            <Card class="content-section__card" v-for="item in randomCategories" :key="item?.id" :recipeInfo="item"
+                roundImage path="categories" />
         </div>
     </section>
     <section class="content-section newsletter-section">
@@ -58,7 +58,7 @@
     <section class="content-section">
         <h2 class="content-section__header">Latest Recipes</h2>
         <div class="content-section__cards latest-recipes">
-            <Card class="content-section__card" v-for="(item, index) in allRecipes" :key="index" :recipeInfo="item"
+            <Card class="content-section__card" v-for="item in allRecipes?.items" :key="item?.id" :recipeInfo="item"
                 path="recipes" />
         </div>
         <Button class="site-btn site-btn_bw-btn latest-recipes-load-more-btn">Load More</Button>
@@ -75,7 +75,7 @@ const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
 const requests = await Promise.all([
     useFetch(`/api/prisma/recipe/random-recipes`),
     useFetch(`/api/prisma/recipe/random-recipes?count=3`),
-    useFetch(`/api/prisma/recipe/recipes-by-category/dessert?per_page=3`),
+    useFetch(`/api/prisma/recipes-by-category/dessert?per_page=3`),
     useFetch(`/api/prisma/category/random-categories?count=6`),
     useFetch(`/api/prisma/recipe/all-recipes`),
 ])
@@ -128,10 +128,12 @@ const [randomRecipe, randomRecipes, recipesByCategory, randomCategories, allReci
     flex-wrap: wrap
     &__image
         width: 100%
+        max-height: 600px
         img
             width: 100%
             height: 100%
             border-radius: 14px 14px 0 0
+            object-fit: cover
     &__text
         position: relative        
         display: grid

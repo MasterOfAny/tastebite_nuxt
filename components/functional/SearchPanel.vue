@@ -3,6 +3,7 @@
         <div class="search-panel-content">
             <div class="search-panel__top">
                 <input class="search-panel__input tb-input" type="text" placeholder="Search..." @input="search" />
+                <Loading v-if="loading" />
                 <svg class="search-panel__close" width="20" height="20" @click="emit('closeSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-close"></use>
                 </svg>
@@ -36,6 +37,7 @@
 
 <script setup lang="ts">
 const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
+const Loading = defineAsyncComponent(() => import('~/components/ui/Loading.vue'))
 import processLink from '@/composables/processLink';
 import { getNoun } from '@/composables/getNoun';
 const emit = defineEmits({
@@ -45,6 +47,7 @@ const emit = defineEmits({
 const router = useRouter()
 const results = ref([])
 const searchQuery = ref('')
+const loading = ref(false)
 let abortController = new AbortController()
 
 const search = async (e: Event) => {
@@ -52,6 +55,7 @@ const search = async (e: Event) => {
     abortController = new AbortController()
     searchQuery.value = (e.target as HTMLInputElement).value;
     try {
+        loading.value = true
         results.value = await $fetch(`/api/prisma/search?search=${searchQuery.value}`, {
             signal: abortController.signal
         });
@@ -61,8 +65,9 @@ const search = async (e: Event) => {
         } else {
             console.error('request error', error)
         }
+    } finally {
+        loading.value = false
     }
-
 }
 </script>
 
@@ -86,6 +91,12 @@ const search = async (e: Event) => {
         cursor: pointer
         position: absolute
         right: 0
+    &:deep(.loading-icon)
+        position: absolute
+        right: 40px
+        z-index: 1
+        circle
+            stroke: var(--color-gray-dark)
     &__results
         margin-top: 20px
     &__results-btn

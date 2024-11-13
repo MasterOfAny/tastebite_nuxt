@@ -2,7 +2,7 @@
     <div
         :class="{ 'recipe-card': true, 'recipe-card_round': props.roundImage, 'recipe-card_quantity': props.withQuantity, 'recipe-card_two-columns': props.twoColumns }">
         <NuxtLink :to="`/${props.path}/${processLink(props.recipeInfo?.name, true)}`" class="recipe-card__image">
-            <img width="252px" height="189px" :src="props.recipeInfo?.image" alt="">
+            <img loading="lazy" width="252px" height="189px" :src="props.recipeInfo?.image" alt="">
         </NuxtLink>
         <Rating v-if="props.withRating && props.recipeInfo?.rating" class="recipe-card__rating"
             :rating="props.recipeInfo?.rating || 2.77" />
@@ -57,6 +57,7 @@ const props = defineProps({
         border-radius: 14px
         transition: border-color 0.3s
         width: 100%
+        height: 189px
         img
             width: 100%
             height: inherit
@@ -97,6 +98,7 @@ const props = defineProps({
     &_round
         .recipe-card__image
             border-radius: 50%
+            height: auto
             img
                 border-radius: 50%
                 aspect-ratio: 1 / 1
@@ -132,6 +134,8 @@ const props = defineProps({
         .recipe-card__name
             font-size: 12px
             line-height: 1.25
+    .recipe-card__image
+        height: 139px
     .recipe-card_quantity
         .recipe-card__name
             margin-right: 0
