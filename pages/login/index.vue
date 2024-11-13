@@ -73,7 +73,7 @@ const Modal = defineAsyncComponent(() => import('~/components/ui/Modal.vue'))
 const userStore = useUser()
 const isAuth = useCookie('isAuth')
 const googleAuth = async () => {
-    const url = await $fetch<string>(`${getBaseApiUrl()}/google/connect`)
+    const url = await $fetch<string>(`/api/google/connect`)
     window.open(url, '_blank', 'width=800,height=600')
 }
 const changeForm = () => {

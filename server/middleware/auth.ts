@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 export default defineEventHandler(async (event) => {
     const accessToken = getCookie(event, 'access_token');
 
-    if (!accessToken) return
+    //if (!accessToken) return
     try {
         const payload = jwt.verify(accessToken, 'secret_key');
         event.context.user = { id: payload?.id };

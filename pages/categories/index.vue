@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import Card from '~/components/ui/Card.vue';
 
-const categories = (await useFetch(`${getBaseApiUrl()}/prisma/category/all-categories`)).data.value
+const categories = (await useFetch(`/api/prisma/category/all-categories`)).data.value
 </script>
 
 <style scoped lang="sass">

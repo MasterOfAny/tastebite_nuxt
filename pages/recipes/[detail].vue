@@ -167,7 +167,7 @@ import { getYoutubeThumbnail } from '~/composables/getYoutubeThumbnail';
 import { useFavorite } from '~/stores/favorite';
 
 onMounted(async () => {
-    recipes.value = await $fetch(`${getBaseApiUrl()}/prisma/recipe/random-recipes?count=3`)
+    recipes.value = await $fetch(`/api/prisma/recipe/random-recipes?count=3`)
 })
 
 const favorite = useFavorite()
@@ -195,10 +195,10 @@ const processEndpoint = () => {
     if (selectedOption.value?.id) {
         params.append('sort', selectedOption.value.id);
     }
-    return `${getBaseApiUrl()}/prisma/comments/${recipe.value?.id}?${params.toString()}`
+    return `/api/prisma/comments/${recipe.value?.id}?${params.toString()}`
 }
 
-const { data: recipe } = await useFetch(`${getBaseApiUrl()}/prisma/recipe/${route.params.detail}`)
+const { data: recipe } = await useFetch(`/api/prisma/recipe/${route.params.detail}`)
 endpoint.value = processEndpoint()
 const { data: comments } = await useFetch(endpoint, {
     watch: [endpoint]

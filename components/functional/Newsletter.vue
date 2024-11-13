@@ -48,7 +48,7 @@ const onSubmit = async (e: Event) => {
     const validateForm = await isFormValid(formFields.value)
     if (!validateForm) return
     const form: Form = {
-        url: `${getBaseApiUrl()}/email/send`,
+        url: `/api/email/send`,
         method: 'POST',
         body: {
             email: formFields.value.mailInput.value

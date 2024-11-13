@@ -5,11 +5,11 @@ export const useFavorite = defineStore('favorite', () => {
     const favorite = ref<Recipe[]>([])
 
     const fetchFavorite = async () => {
-        favorite.value = await $fetch(`${getBaseApiUrl()}/prisma/favorite/get`)
+        favorite.value = await $fetch(`/api/prisma/favorite/get`)
     }
     const updateFavorite = async (data: { recipeId?: string, recipeIds?: string[] }) => {
         try {
-            await $fetch(`${getBaseApiUrl()}/prisma/favorite/update`, {
+            await $fetch(`/api/prisma/favorite/update`, {
                 method: 'POST',
                 body: data
             })

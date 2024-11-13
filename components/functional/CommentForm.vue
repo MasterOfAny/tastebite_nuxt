@@ -90,12 +90,12 @@ const onSubmit = async (e: Event) => {
     let comment
     formSending.value = true
     if (!props.reply) {
-        comment = await $fetch(`${getBaseApiUrl()}/prisma/comments/new`, {
+        comment = await $fetch(`/api/prisma/comments/new`, {
             method: 'POST',
             body: { text: formFields.value.text.value, rating: rating.value, recipe_id: props.recipeId }
         })
     } else {
-        comment = await $fetch(`${getBaseApiUrl()}/prisma/comments/new?` + new URLSearchParams({ comment_id: props.parentId }), {
+        comment = await $fetch(`/api/prisma/comments/new?` + new URLSearchParams({ comment_id: props.parentId }), {
             method: 'POST',
             body: { text: formFields.value.text.value, rating: rating.value, recipe_id: props.recipeId }
         })

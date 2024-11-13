@@ -9,7 +9,7 @@ export const useUser = defineStore('user', () => {
 
     const login = async (email: string, password: string) => {
         const form: Form = {
-            url: `${getBaseApiUrl()}/prisma/user`,
+            url: `/api/prisma/user`,
             method: 'POST',
             body: {
                 email: email,
@@ -26,7 +26,7 @@ export const useUser = defineStore('user', () => {
 
     const register = async (name: string, email: string, password: string) => {
         const form: Form = {
-            url: `${getBaseApiUrl()}/prisma/user`,
+            url: `/api/prisma/user`,
             method: 'POST',
             body: {
                 email: email,
@@ -47,7 +47,7 @@ export const useUser = defineStore('user', () => {
             const accessToken = useCookie<string>('google_token')
             if (accessToken) {
                 try {
-                    await $fetch(`https://oauth2.googleapis.com/revoke?token=${accessToken.value}`, {
+                    await $fetch(`https://oauth2.google/apis.com/revoke?token=${accessToken.value}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -59,7 +59,7 @@ export const useUser = defineStore('user', () => {
             }
         }
         try {
-            await $fetch(`${getBaseApiUrl()}/prisma/user/logout`)
+            await $fetch(`//api/prisma/user/logout`)
         } catch (e) {
 
         }
@@ -72,7 +72,7 @@ export const useUser = defineStore('user', () => {
     const fetchUserData = async (full = false) => {
         if (!full) {
             try {
-                const res = (await useFetch(`${getBaseApiUrl()}/prisma/user/get`)).data.value
+                const res = (await useFetch(`//api/prisma/user/get`)).data.value
                 if (!res?.message) {
                     userData.value = res as unknown as User
                     isAuth.value = true
@@ -85,7 +85,7 @@ export const useUser = defineStore('user', () => {
             }
         } else {
             try {
-                const res = await $fetch(`${getBaseApiUrl()}/prisma/user/get?full=true`)
+                const res = await $fetch(`//api/prisma/user/get?full=true`)
                 if (!res?.message) {
                     userData.value = res as unknown as User
                     isAuth.value = true
@@ -120,7 +120,7 @@ export const useUser = defineStore('user', () => {
         }
 
         try {
-            const res = await $fetch(`${getBaseApiUrl()}/prisma/user/update`, { method: 'POST', body: formData })
+            const res = await $fetch(`//api/prisma/user/update`, { method: 'POST', body: formData })
             if (!res?.message) {
                 userData.value = res as unknown as User
             } else {

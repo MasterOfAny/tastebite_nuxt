@@ -43,7 +43,7 @@ const selectOptions = [
 const selectedOption = ref(route.query.sort ? selectOptions.find(option => option.id === route.query.sort) : selectOptions[0])
 const endpoint = ref('')
 const processEndpoint = (to: RouteLocationNormalized) => {
-    let url = `${getBaseApiUrl()}/prisma/recipe/all-recipes`
+    let url = `/api/prisma/recipe/all-recipes`
     const params = new URLSearchParams();
     if (to.query.page) {
         params.append('page', to.query.page as string);
