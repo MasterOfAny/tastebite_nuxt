@@ -430,6 +430,9 @@ const insertComment = async (comment) => {
         margin-top: 32px
         display: grid
         gap: 32px
+    &__item
+        &:deep(.recipe-card__image)
+            height: 100%
 .page-recipe__column-right:deep(.newsletter)
     margin-top: 64px
     padding: 56px 20px
