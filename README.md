@@ -1,75 +1,35 @@
-# Nuxt 3 Minimal Starter
+# TasteBite site
+Food website in nuxt 3 ssr. Using pinia as a store and prisma as ORM with supabase db.
+It has account, comments, and search logic.
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
-
+## Setup and run
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+npm prisma generate
+npx prisma migrate dev --name init
 npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
+## Env variables
 ```bash
-# npm
-npm run build
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
 
-# pnpm
-pnpm run build
+SUPABASE_URL=
+SUPABASE_KEY=
 
-# yarn
-yarn build
+DATABASE_URL=
 
-# bun
-bun run build
+PORT=
+
+GOOGLE_CLIENT_ID=
+
+GOOGLE_CLIENT_SECRET=
+
+GOOGLE_OAUTH_URL=
+
+GOOGLE_ACCESS_TOKEN_URL=
+
+GOOGLE_TOKEN_INFO_URL=
 ```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
