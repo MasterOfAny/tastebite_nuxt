@@ -3,7 +3,7 @@
         <div class="search-panel-content">
             <div class="search-panel__top">
                 <input class="search-panel__input tb-input" type="text" placeholder="Search..." @input="search" />
-                <Loading v-if="loading" />
+                <Loading v-if="loading && results?.length === 0" />
                 <svg class="search-panel__close" width="20" height="20" @click="emit('closeSearchPanel')">
                     <use xlink:href="/images/iconsList.svg#icon-close"></use>
                 </svg>
@@ -51,13 +51,14 @@ const loading = ref(false)
 let abortController = new AbortController()
 
 const search = async (e: Event) => {
-    abortController.abort();
+    results.value.length = 0
+    abortController.abort('cancel)');
     abortController = new AbortController()
     searchQuery.value = (e.target as HTMLInputElement).value;
     try {
         loading.value = true
         results.value = await $fetch(`/api/prisma/search?search=${searchQuery.value}`, {
-            signal: abortController.signal
+            signal: abortController.signal,
         });
     } catch (error) {
         if (error.name === 'AbortError') {
@@ -65,9 +66,8 @@ const search = async (e: Event) => {
         } else {
             console.error('request error', error)
         }
-    } finally {
-        loading.value = false
     }
+    loading.value = false
 }
 </script>
 
@@ -99,6 +99,8 @@ const search = async (e: Event) => {
             stroke: var(--color-gray-dark)
     &__results
         margin-top: 20px
+        max-height: 600px
+        overflow-y: auto
     &__results-btn
         margin: 24px auto
 .search-panel-content

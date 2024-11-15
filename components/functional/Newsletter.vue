@@ -23,7 +23,7 @@
             </p>
         </div>
         <Modal v-if="openModal" @close="openModal = false">
-            <p>{{ formResult }}</p>
+            <p>{{ formResult?.message }}</p>
         </Modal>
     </div>
 </template>

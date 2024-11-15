@@ -22,9 +22,17 @@ export default defineEventHandler(async (event) => {
         html: newsletterTemplate,
     };
 
+    const sendMailPromise = transporter.sendMail(mailOptions);
+
+    const timeoutPromise = new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ message: 'Email sent (timeout)' });
+        }, 2000);
+    });
+
     try {
-        await transporter.sendMail(mailOptions);
-        return { message: 'Email sent successfully' };
+        const result = await Promise.race([sendMailPromise, timeoutPromise]);
+        return result;
     } catch (error) {
         return { error: 'Failed to send email' };
     }
