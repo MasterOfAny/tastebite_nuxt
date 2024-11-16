@@ -12,8 +12,7 @@
         <div class="search-page__cards">
             <Card v-for="item in recipes?.items" :key="item?.id" :recipeInfo="item" />
         </div>
-        {{ recipes?.total }}
-        <Pagination v-if="recipes?.pagesLeft > 0" class="search-page__pagination" :page="recipes?.page"
+        <Pagination v-if="recipes?.page + recipes?.pagesLeft > 1" class="search-page__pagination" :page="recipes?.page"
             :pages="recipes?.page + recipes?.pagesLeft" />
     </div>
 </template>

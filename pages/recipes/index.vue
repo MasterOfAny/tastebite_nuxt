@@ -10,7 +10,7 @@
         <div :class="{ 'recipes-page__cards': true, 'recipes-page__cards_loading': status === 'pending' }">
             <Card v-for="(item, index) in recipes?.items" :key="index" :recipeInfo="item" path="recipes" />
         </div>
-        <Pagination v-if="recipes?.pagesLeft > 0" class="recipes-page__pagination" :page="recipes?.page"
+        <Pagination v-if="recipes?.page + recipes?.pagesLeft > 1" class="recipes-page__pagination" :page="recipes?.page"
             :pages="recipes?.page + recipes?.pagesLeft" />
     </div>
 </template>

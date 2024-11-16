@@ -165,7 +165,6 @@ const Button = defineAsyncComponent(() => import('~/components/ui/Button.vue'))
 import { formatDate } from '~/composables/formatDate';
 import { getYoutubeThumbnail } from '~/composables/getYoutubeThumbnail';
 import { useFavorite } from '~/stores/favorite';
-
 onMounted(async () => {
     recipes.value = await $fetch(`/api/prisma/recipe/random-recipes?count=3`)
 })

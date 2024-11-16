@@ -25,8 +25,8 @@
                     :class="{ 'category-details__cards': true, 'category-details__cards_loading': status === 'pending' }">
                     <Card v-for="(item, index) in category?.recipes" :key="index" :recipeInfo="item" path="recipes" />
                 </div>
-                <Pagination v-if="category?.pagesLeft > 0" class="category-details__pagination" :page="category?.page"
-                    :pages="category?.page + category?.pagesLeft" />
+                <Pagination v-if="category?.page + category?.pagesLeft > 1" class="category-details__pagination"
+                    :page="category?.page" :pages="category?.page + category?.pagesLeft" />
             </div>
         </div>
     </div>
