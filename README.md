@@ -9,6 +9,9 @@ npm prisma generate
 npx prisma migrate dev --name init
 npm run dev
 ```
+## Problems
+You may encounter server timeout error because of connection to supabase. Needed to just wait when connection will be established (random time) and try again later.
+This problem not occurs in dev mode.
 ## Env variables
 ```bash
 SMTP_HOST=
